@@ -1,5 +1,6 @@
 package com.library.library_backend.configuration;
 
+import com.library.library_backend.mappers.AuthorMapper;
 import com.library.library_backend.mappers.BookMapper;
 import com.library.library_backend.services.AuthorByKey;
 import com.library.library_backend.services.BookByIsbnService;
@@ -20,8 +21,8 @@ public class BookConfiguration {
     public BookByIsbnService bookByIsbnService(RestTemplate restTemplate){return new BookByIsbnService(restTemplate);}
 
     @Bean
-    public AuthorByKey authorService(RestTemplate restTemplate){
-        return new AuthorByKey(restTemplate);
+    public AuthorByKey authorService(RestTemplate restTemplate, AuthorMapper authorMapper){
+        return new AuthorByKey(restTemplate, authorMapper);
     }
 
     @Bean

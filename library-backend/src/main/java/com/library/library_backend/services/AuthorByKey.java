@@ -1,6 +1,7 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.AuthorResponseOpenLibraryDto;
+import com.library.library_backend.mappers.AuthorMapper;
 import com.library.library_backend.models.Author;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -9,9 +10,11 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class AuthorByKey {
     private final RestTemplate restTemplate;
+    private final AuthorMapper authorMapper;
 
-    public AuthorByKey(RestTemplate restTemplate){
+    public AuthorByKey(RestTemplate restTemplate, AuthorMapper authorMapper){
         this.restTemplate = restTemplate;
+        this.authorMapper = authorMapper;
     }
 
     public Author fetch(String key){
@@ -22,7 +25,7 @@ public class AuthorByKey {
             AuthorResponseOpenLibraryDto response = restTemplate.getForObject(uri, AuthorResponseOpenLibraryDto.class);
 
             if(response != null){
-                return response.toEntity();
+                return authorMapper.toEntity(response);
             }else{
                 throw new RuntimeException("Body not found!");
             }
