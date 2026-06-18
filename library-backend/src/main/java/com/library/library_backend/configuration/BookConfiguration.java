@@ -1,5 +1,9 @@
 package com.library.library_backend.configuration;
 
+import com.library.library_backend.mappers.BookMapper;
+import com.library.library_backend.services.AuthorByKey;
+import com.library.library_backend.services.BookByIsbnService;
+import com.library.library_backend.services.BookFacade;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
@@ -12,4 +16,17 @@ public class BookConfiguration {
         return new RestTemplate();
     }
 
+    @Bean
+    public BookByIsbnService bookByIsbnService(RestTemplate restTemplate){return new BookByIsbnService(restTemplate);}
+
+    @Bean
+    public AuthorByKey authorService(RestTemplate restTemplate){
+        return new AuthorByKey(restTemplate);
+    }
+
+    @Bean
+    public BookFacade bookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper){ return new BookFacade(bookByIsbnService, authorByKey, bookMapper); }
+
+    @Bean
+    public BookMapper bookMapper(){ return new BookMapper(); }
 }
