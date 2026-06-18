@@ -14,7 +14,7 @@ public class Author {
     private String nome;
     private String dataNasc;
     private String bio;
-    @OneToMany(mappedBy = "author")
+    @ManyToMany(mappedBy = "author")
     private List<Book> livro;
 
 }
