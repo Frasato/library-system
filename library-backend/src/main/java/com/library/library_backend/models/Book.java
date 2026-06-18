@@ -1,8 +1,7 @@
 package com.library.library_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String titulo;
-    private Date dataPublicacao;
+    private String dataPublicacao;
     private List<String> isbn;
     private List<String> editora;
     private String createdAt;
@@ -26,13 +25,18 @@ public class Book {
     )
     private List<Book> livrosSemelhantes;
 
+    @JsonManagedReference
     @ManyToMany
-    @JoinColumn(name = "author_id")
+    @JoinTable(
+            name = "livr_autor",
+            joinColumns = @JoinColumn(name = "livro_id"),
+            inverseJoinColumns = @JoinColumn(name = "autor_id")
+    )
     private List<Author> author;
 
     public Book() {}
 
-    public Book(UUID id, String titulo, Date dataPublicacao, List<String> isbn, List<String> editora, String createdAt, List<Book> livrosSemelhantes, List<Author> author) {
+    public Book(UUID id, String titulo, String dataPublicacao, List<String> isbn, List<String> editora, String createdAt, List<Book> livrosSemelhantes, List<Author> author) {
         this.id = id;
         this.titulo = titulo;
         this.dataPublicacao = dataPublicacao;
@@ -59,11 +63,11 @@ public class Book {
         this.titulo = titulo;
     }
 
-    public Date getDataPublicacao() {
+    public String getDataPublicacao() {
         return dataPublicacao;
     }
 
-    public void setDataPublicacao(Date dataPublicacao) {
+    public void setDataPublicacao(String dataPublicacao) {
         this.dataPublicacao = dataPublicacao;
     }
 
