@@ -25,7 +25,9 @@ public class AuthorByKey {
             AuthorResponseOpenLibraryDto response = restTemplate.getForObject(uri, AuthorResponseOpenLibraryDto.class);
 
             if(response != null){
-                return authorMapper.toEntity(response);
+                Author author = authorMapper.toEntity(response);
+                author.setKey(key);
+                return author;
             }else{
                 throw new RuntimeException("Body not found!");
             }
