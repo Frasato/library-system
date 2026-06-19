@@ -2,11 +2,13 @@ package com.library.library_backend.services;
 
 import com.library.library_backend.dto.BookResponseOpenLibraryDto;
 import com.library.library_backend.dto.ResponseBookDto;
+import com.library.library_backend.dto.ResponseDeleteBookDto;
 import com.library.library_backend.mappers.BookMapper;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BookFacade {
@@ -15,13 +17,15 @@ public class BookFacade {
     private final BookMapper bookMapper;
     private final CreateBookService createBookService;
     private final AllBooksService allBooksService;
+    private final DeleteBookService deleteBookService;
 
-    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService){
+    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService){
         this.bookByIsbnService = bookByIsbnService;
         this.authorByKey = authorByKey;
         this.bookMapper = bookMapper;
         this.createBookService = createBookService;
         this.allBooksService = allBooksService;
+        this.deleteBookService = deleteBookService;
     }
 
     public ResponseBookDto getInfosByIsbn(String isbn){
@@ -58,6 +62,12 @@ public class BookFacade {
 
     public List<Book> allBooks(){
         return allBooksService.fetchAllBooks();
+    }
+
+    public ResponseDeleteBookDto deleteBook(String id){
+        if(id.isEmpty()) throw new RuntimeException("ID can't be null");
+        UUID convertedId = UUID.fromString(id);
+        return deleteBookService.removeBook(convertedId);
     }
 
 }
