@@ -1,13 +1,13 @@
 package com.library.library_backend.mappers;
 
 import com.library.library_backend.dto.BookResponseOpenLibraryDto;
-import com.library.library_backend.dto.ResponseGetBookIsbDto;
+import com.library.library_backend.dto.ResponseBookDto;
 import com.library.library_backend.models.Book;
 
 public class BookMapper {
 
-    public ResponseGetBookIsbDto toDto(Book book){
-        return new ResponseGetBookIsbDto(
+    public ResponseBookDto toDto(Book book){
+        return new ResponseBookDto(
                 book.getTitulo(),
                 book.getDataPublicacao(),
                 book.getEditora(),
