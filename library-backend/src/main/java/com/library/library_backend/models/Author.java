@@ -14,7 +14,6 @@ public class Author {
     private UUID id;
     private String nome;
     private String dataNasc;
-    private String bio;
     private String key;
     @JsonBackReference
     @ManyToMany(mappedBy = "author")
@@ -22,11 +21,10 @@ public class Author {
 
     public Author() {}
 
-    public Author(UUID id, String nome, String dataNasc, String bio, String key, List<Book> livro) {
+    public Author(UUID id, String nome, String dataNasc, String key, List<Book> livro) {
         this.id = id;
         this.nome = nome;
         this.dataNasc = dataNasc;
-        this.bio = bio;
         this.key = key;
         this.livro = livro;
     }
@@ -53,14 +51,6 @@ public class Author {
 
     public void setDataNasc(String dataNasc) {
         this.dataNasc = dataNasc;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
     }
 
     public String getKey() {return key;}
