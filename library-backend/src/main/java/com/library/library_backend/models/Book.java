@@ -2,6 +2,7 @@ package com.library.library_backend.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,5 +106,10 @@ public class Book {
 
     public void setAuthor(List<Author> author) {
         this.author = author;
+    }
+
+    @PrePersist
+    private void setCreatedAt(){
+        this.createdAt = Instant.now().toString();
     }
 }
