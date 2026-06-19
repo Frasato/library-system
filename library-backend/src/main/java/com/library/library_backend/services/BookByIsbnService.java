@@ -14,8 +14,6 @@ public class BookByIsbnService {
     }
 
     public BookResponseOpenLibraryDto fetch(String isbn){
-        if(isbn.isEmpty()) throw new RuntimeException("ISBN can't be empty!");
-
         try{
             String uri = "https://openlibrary.org/isbn/"+ isbn +".json";
             BookResponseOpenLibraryDto response = restTemplate.getForObject(uri, BookResponseOpenLibraryDto.class);
