@@ -9,7 +9,6 @@ public class AuthorMapper {
         Author author = new Author();
         author.setNome(response.name());
         author.setDataNasc(response.birth_date());
-        author.setBio(response.bio().value());
         return author;
     }
 
