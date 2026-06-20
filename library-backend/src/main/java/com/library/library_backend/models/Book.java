@@ -14,7 +14,9 @@ public class Book {
     private UUID id;
     private String titulo;
     private String dataPublicacao;
+    @ElementCollection
     private List<String> isbn;
+    @ElementCollection
     private List<String> editora;
     private String createdAt;
 
