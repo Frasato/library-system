@@ -2,6 +2,7 @@ package org.frasato.view.home;
 
 import net.miginfocom.swing.MigLayout;
 import org.frasato.model.BookTableModel;
+import org.frasato.view.home.components.Bottom;
 import org.frasato.view.home.components.Filter;
 import org.frasato.view.home.components.Header;
 import org.frasato.view.home.components.Table;
@@ -11,6 +12,7 @@ import javax.swing.*;
 public class HomeView extends JPanel {
 
     private Table table;
+    private Bottom bottom;
 
     public HomeView(BookTableModel model){ init(model); }
 
@@ -20,8 +22,13 @@ public class HomeView extends JPanel {
         add(new Filter(), "growx, wrap");
 
         table = new Table(model);
-        add(table, "grow, push");
+        add(table, "grow, push, wrap");
+
+        bottom = new Bottom();
+        add(bottom);
     }
+
+    public Bottom getBottom(){ return this.bottom; }
 
     public Table getTable(){
         return this.table;
