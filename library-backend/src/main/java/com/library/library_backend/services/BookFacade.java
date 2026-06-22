@@ -1,13 +1,19 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.BookResponseOpenLibraryDto;
+import com.library.library_backend.dto.RequestUpdateBookDto;
 import com.library.library_backend.dto.ResponseBookDto;
 import com.library.library_backend.dto.ResponseDeleteBookDto;
 import com.library.library_backend.mappers.BookMapper;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -18,14 +24,16 @@ public class BookFacade {
     private final CreateBookService createBookService;
     private final AllBooksService allBooksService;
     private final DeleteBookService deleteBookService;
+    private final UpdateBookService updateBookService;
 
-    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService){
+    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService, UpdateBookService updateBookService){
         this.bookByIsbnService = bookByIsbnService;
         this.authorByKey = authorByKey;
         this.bookMapper = bookMapper;
         this.createBookService = createBookService;
         this.allBooksService = allBooksService;
         this.deleteBookService = deleteBookService;
+        this.updateBookService = updateBookService;
     }
 
     public ResponseBookDto getInfosByIsbn(String isbn){
@@ -58,6 +66,17 @@ public class BookFacade {
 
         Book savedBook = createBookService.createBook(book);
         return bookMapper.toDto(savedBook);
+    }
+
+    public Map<String, Object> updateBook(RequestUpdateBookDto requestUpdateBookDto, String id){
+        Map<String, Object> response = new HashMap<>();
+
+        updateBookService.updateBook(requestUpdateBookDto, UUID.fromString(id));
+
+        response.put("status", HttpStatus.OK);
+        response.put("book_id", id);
+        response.put("time", Instant.now());
+        return response;
     }
 
     public List<Book> allBooks(){
