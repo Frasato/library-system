@@ -8,7 +8,7 @@ public class Header extends JPanel {
     public Header(){ init(); }
 
     public void init(){
-        setLayout(new MigLayout("insets 10", "[][][][]", "[]"));
+        setLayout(new MigLayout("", "[][][][]", "[]"));
 
         SearchBox titleBox = new SearchBox("Titulo");
         SearchBox authorBox = new SearchBox("Autor");
