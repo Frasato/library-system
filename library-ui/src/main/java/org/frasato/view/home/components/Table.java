@@ -3,6 +3,8 @@ package org.frasato.view.home.components;
 import com.formdev.flatlaf.FlatClientProperties;
 import net.miginfocom.swing.MigLayout;
 import org.frasato.model.BookTableModel;
+import org.frasato.view.home.styles.TableRender;
+
 import javax.swing.*;
 
 public class Table extends JPanel {
@@ -17,6 +19,7 @@ public class Table extends JPanel {
         putClientProperty(FlatClientProperties.STYLE, "arc: 6;");
 
         table = new JTable(model);
+        table.setDefaultRenderer(Object.class, new TableRender());
 
         table.setRowHeight(40);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
@@ -24,6 +27,12 @@ public class Table extends JPanel {
         table.getTableHeader().setReorderingAllowed(false);
 
         JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(null);
+        scrollPane.putClientProperty(
+                FlatClientProperties.STYLE,
+                "border:0,0,0,0;"
+        );
 
         add(scrollPane, "grow, push");
     }
