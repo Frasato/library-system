@@ -29,7 +29,7 @@ public class Book {
     private List<Book> livrosSemelhantes;
 
     @JsonManagedReference
-    @ManyToMany
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JoinTable(
             name = "livr_autor",
             joinColumns = @JoinColumn(name = "livro_id"),
