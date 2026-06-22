@@ -1,5 +1,6 @@
 package com.library.library_backend.services.importers;
 
+import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 public class CsvBookImporter implements BookImporter{
@@ -23,22 +25,36 @@ public class CsvBookImporter implements BookImporter{
 
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
+
+            reader.readLine();
+
             String line;
 
             while((line = reader.readLine()) != null){
-                String[] values = line.split(",");
+                String[] values = line.split(";");
 
                 Book book = new Book();
-                book.setTitulo(values[0]);
-                book.setDataPublicacao(values[1]);
-                book.setIsbn(List.of(values[2]));
-                book.setEditora(List.of(values[3]));
+                book.setTitulo(values[0].trim());
+                book.setDataPublicacao(values[1].trim());
+                book.setIsbn(List.of(values[2].trim()));
+                book.setEditora(List.of(values[3].trim()));
+
+                List<Author> authors = Stream.of(values[4].split(";"))
+                        .map(String::trim)
+                        .map(name -> {
+                            Author author = new Author();
+                            author.setNome(name);
+                            return author;
+                        })
+                        .toList();
+
+                book.setAuthor(authors);
                 books.add(book);
             }
 
             return books;
         }catch(IOException e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Error while importing CSV: " + e);
         }
     }
 }
