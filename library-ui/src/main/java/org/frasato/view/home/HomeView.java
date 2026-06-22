@@ -20,7 +20,7 @@ public class HomeView extends JPanel {
         add(new Filter(), "growx, wrap");
 
         table = new Table(model);
-        add(table);
+        add(table, "grow, push");
     }
 
     public Table getTable(){
