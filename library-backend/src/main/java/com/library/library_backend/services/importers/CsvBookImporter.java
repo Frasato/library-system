@@ -36,8 +36,14 @@ public class CsvBookImporter implements BookImporter{
                 Book book = new Book();
                 book.setTitulo(values[0].trim());
                 book.setDataPublicacao(values[1].trim());
-                book.setIsbn(List.of(values[2].trim()));
-                book.setEditora(List.of(values[3].trim()));
+
+                ArrayList<String> isbn = new ArrayList<>();
+                isbn.add(values[2]);
+                book.setIsbn(isbn);
+
+                ArrayList<String> publishers = new ArrayList<>();
+                publishers.add(values[3]);
+                book.setEditora(publishers);
 
                 List<Author> authors = Stream.of(values[4].split(";"))
                         .map(String::trim)

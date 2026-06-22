@@ -39,8 +39,21 @@ public class XmlBookImporter implements BookImporter{
                 Book book = new Book();
                 book.setTitulo(getValue(element, "titulo"));
                 book.setDataPublicacao(getValue(element, "dataPublicacao"));
-                book.setIsbn(List.of(getValue(element, "item")));
-                book.setEditora(List.of(getValue((Element) element.getElementsByTagName("editora").item(0), "item")));
+
+                List<String> isbn = new ArrayList<>();
+                isbn.add(getValue(element, "item"));
+                book.setIsbn(isbn);
+
+                List<String> publishers = new ArrayList<>();
+                publishers.add(
+                        getValue(
+                                (Element) element
+                                        .getElementsByTagName("editora")
+                                        .item(0),
+                                "item"
+                        )
+                );;
+                book.setEditora(publishers);
 
                 List<Author> authors = new ArrayList<>();
 
