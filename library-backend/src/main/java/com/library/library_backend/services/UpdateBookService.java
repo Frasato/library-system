@@ -24,23 +24,23 @@ public class UpdateBookService {
 
         Book book = foundedBook.get();
 
-        if(!request.titulo().isEmpty()){
+        if(request.titulo() != null){
             book.setTitulo(request.titulo());
         }
 
-        if(!request.editora().isEmpty()){
+        if(request.editora() != null){
             book.setEditora(request.editora());
         }
 
-        if(!request.isbn().isEmpty()){
+        if(request.isbn() != null){
             book.setIsbn(request.isbn());
         }
 
-        if(!request.dataPublicacao().isEmpty()){
+        if(request.dataPublicacao() != null){
             book.setDataPublicacao(request.dataPublicacao());
         }
 
-        if(!request.livrosSemelhantes().isEmpty()){
+        if(request.livrosSemelhantes() != null){
             List<Book> books = request
                     .livrosSemelhantes()
                     .stream()
