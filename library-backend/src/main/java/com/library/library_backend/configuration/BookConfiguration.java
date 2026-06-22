@@ -24,8 +24,8 @@ public class BookConfiguration {
     public AuthorByKey AuthorByKey(RestTemplate restTemplate, AuthorMapper authorMapper){ return new AuthorByKey(restTemplate, authorMapper);}
 
     @Bean
-    public BookFacade bookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService){
-        return new BookFacade(bookByIsbnService, authorByKey, bookMapper, createBookService, allBooksService, deleteBookService);
+    public BookFacade bookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService, UpdateBookService updateBookService){
+        return new BookFacade(bookByIsbnService, authorByKey, bookMapper, createBookService, allBooksService, deleteBookService, updateBookService);
     }
 
     @Bean
