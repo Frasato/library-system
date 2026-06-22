@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,11 @@ public class BookController {
     public ResponseEntity<ResponseBookDto> createBook(@RequestBody RequestIsbnDto requestIsbnDto){
         ResponseBookDto response = bookFacade.createNewBook(requestIsbnDto.isbn());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<ResponseImportBookDto> importBook(@RequestParam MultipartFile file){
+        return ResponseEntity.status(HttpStatus.OK).body(bookFacade.importBook(file));
     }
 
     @PatchMapping("/{id}")
