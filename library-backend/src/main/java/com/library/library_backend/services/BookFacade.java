@@ -1,14 +1,13 @@
 package com.library.library_backend.services;
 
-import com.library.library_backend.dto.BookResponseOpenLibraryDto;
-import com.library.library_backend.dto.RequestUpdateBookDto;
-import com.library.library_backend.dto.ResponseBookDto;
-import com.library.library_backend.dto.ResponseDeleteBookDto;
+import com.library.library_backend.dto.*;
 import com.library.library_backend.mappers.BookMapper;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
+import com.library.library_backend.services.importers.ImportBookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -25,8 +24,9 @@ public class BookFacade {
     private final AllBooksService allBooksService;
     private final DeleteBookService deleteBookService;
     private final UpdateBookService updateBookService;
+    private final ImportBookService importBookService;
 
-    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService, UpdateBookService updateBookService){
+    public BookFacade(BookByIsbnService bookByIsbnService, AuthorByKey authorByKey, BookMapper bookMapper, CreateBookService createBookService, AllBooksService allBooksService, DeleteBookService deleteBookService, UpdateBookService updateBookService, ImportBookService importBookService){
         this.bookByIsbnService = bookByIsbnService;
         this.authorByKey = authorByKey;
         this.bookMapper = bookMapper;
@@ -34,6 +34,7 @@ public class BookFacade {
         this.allBooksService = allBooksService;
         this.deleteBookService = deleteBookService;
         this.updateBookService = updateBookService;
+        this.importBookService = importBookService;
     }
 
     public ResponseBookDto getInfosByIsbn(String isbn){
@@ -42,12 +43,15 @@ public class BookFacade {
         BookResponseOpenLibraryDto responseBook = bookByIsbnService.fetch(isbn);
         Book book = bookMapper.toEntity(responseBook);
 
-        List<Author> authors = responseBook.authors()
-                .stream()
-                .map(authorKey -> authorByKey.fetch(authorKey.key()))
-                .toList();
+        if(responseBook.authors() != null){
+            List<Author> authors = responseBook.authors()
+                    .stream()
+                    .map(authorKey -> authorByKey.fetch(authorKey.key()))
+                    .toList();
 
-        book.setAuthor(authors);
+            book.setAuthor(authors);
+        }
+
         return bookMapper.toDto(book);
     }
 
@@ -57,15 +61,21 @@ public class BookFacade {
         BookResponseOpenLibraryDto responseBook = bookByIsbnService.fetch(isbn);
         Book book = bookMapper.toEntity(responseBook);
 
-        List<Author> authors = responseBook.authors()
-                .stream()
-                .map(authorKey -> authorByKey.fetch(authorKey.key()))
-                .toList();
+        if(responseBook.authors() != null){
+            List<Author> authors = responseBook.authors()
+                    .stream()
+                    .map(authorKey -> authorByKey.fetch(authorKey.key()))
+                    .toList();
 
-        book.setAuthor(authors);
+            book.setAuthor(authors);
+        }
 
         Book savedBook = createBookService.createBook(book);
         return bookMapper.toDto(savedBook);
+    }
+
+    public ResponseImportBookDto importBook(MultipartFile file){
+        return importBookService.importFile(file);
     }
 
     public Map<String, Object> updateBook(RequestUpdateBookDto requestUpdateBookDto, String id){
