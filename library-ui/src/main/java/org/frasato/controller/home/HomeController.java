@@ -7,11 +7,16 @@ import org.frasato.view.home.HomeView;
 import org.frasato.view.home.modal.EditModal;
 import org.frasato.view.home.modal.IncludeModal;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.TableRowSorter;
 import java.io.File;
+import java.util.regex.Pattern;
 
 public class HomeController {
     private final HomeView homeView;
     private final BookTableModel model;
+    private TableRowSorter<BookTableModel> sorter;
 
     public HomeController(){
         model = new BookTableModel();
@@ -25,6 +30,7 @@ public class HomeController {
     private void init(){
         loadBooks();
         bindEvents();
+        filter();
     }
 
     private void bindEvents(){
@@ -56,6 +62,45 @@ public class HomeController {
         }
     }
 
+    private void filter(){
+        JTable table = homeView.getTable().getTable();
+        this.sorter = new TableRowSorter<>(model);
+
+        table.setRowSorter(sorter);
+
+        Runnable applyFilter = () -> {
+            String text = homeView.getFilter().getText().trim();
+            if(text.isBlank()){
+                sorter.setRowFilter(null);
+                return;
+            }
+
+            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(text)));
+        };
+
+        homeView.getFilter()
+                .getFilterField()
+                .getDocument()
+                .addDocumentListener(
+                        new DocumentListener() {
+                            @Override
+                            public void insertUpdate(DocumentEvent e) {
+                                applyFilter.run();
+                            }
+
+                            @Override
+                            public void removeUpdate(DocumentEvent e) {
+                                applyFilter.run();
+                            }
+
+                            @Override
+                            public void changedUpdate(DocumentEvent e) {
+                                applyFilter.run();
+                            }
+                        }
+                );
+    }
+
     private void openEditModal(){
         JTable table = homeView.getTable().getTable();
         int selectedRow = table.getSelectedRow();
@@ -67,7 +112,8 @@ public class HomeController {
             return;
         }
 
-        BookModel bookModel = model.getBookAt(selectedRow);
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+        BookModel bookModel = model.getBookAt(modelRow);
 
         EditModal editModal = new EditModal();
 
