@@ -13,13 +13,16 @@ public class HomeView extends JPanel {
 
     private Table table;
     private Bottom bottom;
+    private Filter filter;
 
     public HomeView(BookTableModel model){ init(model); }
 
     public void init(BookTableModel model){
         setLayout(new MigLayout("fill", "[grow]", "[][][grow][]"));
         add(new Header(), "wrap");
-        add(new Filter(), "growx, wrap");
+
+        filter = new Filter();
+        add(filter, "growx, wrap");
 
         table = new Table(model);
         add(table, "grow, push, wrap");
@@ -33,4 +36,6 @@ public class HomeView extends JPanel {
     public Table getTable(){
         return this.table;
     }
+
+    public Filter getFilter() { return this.filter; }
 }
