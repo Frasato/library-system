@@ -14,11 +14,8 @@ public class EditModalTextField extends JTextField {
         );
 
         putClientProperty(
-                FlatClientProperties.STYLE,
-                """
-                arc:12;
-                minimumHeight:42;
-                """
+                FlatClientProperties.STYLE, "arc:12;" +
+                "minimumHeight:42;"
         );
     }
 }
