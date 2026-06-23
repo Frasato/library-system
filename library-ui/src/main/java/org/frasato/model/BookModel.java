@@ -1,15 +1,24 @@
 package org.frasato.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BookModel {
     private UUID id;
+    @JsonProperty("titulo")
     private String title;
+    @JsonProperty("dataPublicacao")
     private String publishDate;
     private List<String> isbn;
+    @JsonProperty("editora")
     private List<String> publishers;
+    @JsonProperty("author")
     private List<AuthorModel> authors;
+    @JsonProperty("livrosSemelhantes")
     private List<BookModel> similarBooks;
 
     public BookModel() {}
