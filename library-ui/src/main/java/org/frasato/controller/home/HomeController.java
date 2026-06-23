@@ -39,6 +39,10 @@ public class HomeController {
         homeView.getBottom()
                 .getEditButton()
                 .addActionListener(e -> openEditModal());
+
+        homeView.getFilter()
+                .getButton()
+                .addActionListener(e -> actualize());
     }
 
     private void importFile(){
@@ -70,6 +74,10 @@ public class HomeController {
         });
 
         includeModal.setVisible(true);
+    }
+
+    private void actualize(){
+        loadBooks();
     }
 
     private void loadBooks(){
