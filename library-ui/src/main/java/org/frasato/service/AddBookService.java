@@ -22,7 +22,9 @@ public class AddBookService {
             HttpResponse<String> response = httpClient
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response);
+            if(response.statusCode() != 201){
+                throw new RuntimeException("Error while creating book: " + response.body());
+            }
         }catch(Exception e){
             throw new RuntimeException(e);
         }
