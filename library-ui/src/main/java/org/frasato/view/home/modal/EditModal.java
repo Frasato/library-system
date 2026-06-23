@@ -33,8 +33,7 @@ public class EditModal extends JDialog {
 
         JLabel label = new JLabel("Informações sobre o livro");
         label.putClientProperty(
-                FlatClientProperties.STYLE,
-                "font: +8"
+                FlatClientProperties.STYLE, "font: +8"
         );
 
         title = new EditModalTextField("Título");
@@ -45,25 +44,19 @@ public class EditModal extends JDialog {
 
         finishButton = new JButton("Concluir");
         finishButton.putClientProperty(
-                FlatClientProperties.STYLE,
-                """
-                arc:12;
-                minimumHeight:42;
-                minimumWidth:140;
-                hoverBackground:#bfdfff;
-                """
+                FlatClientProperties.STYLE, "arc:12;" +
+                "minimumHeight:42;" +
+                "minimumWidth:140;" +
+                "hoverBackground:#bfdfff;"
         );
 
         deleteButton = new JButton("Deletar");
         deleteButton.putClientProperty(
-                FlatClientProperties.STYLE,
-                """
-                arc:12;
-                foreground:#ff4a3d;
-                minimumHeight:42;
-                minimumWidth:140;
-                hoverBackground:#ffd9d6;
-                """
+                FlatClientProperties.STYLE, "arc: 12;" +
+                "foreground: #ff4a3d;" +
+                "minimumHeight: 42;" +
+                "minimumWidth: 140;" +
+                "hoverBackground: #ffd9d6;"
         );
 
         add(label, "wrap");
@@ -74,9 +67,7 @@ public class EditModal extends JDialog {
         add(publisher, "w 350!, wrap");
         add(author, "w 350!, wrap");
 
-        JPanel buttons = new JPanel(
-                new MigLayout("insets 0, gap 12", "[][]")
-        );
+        JPanel buttons = new JPanel(new MigLayout("insets 0, gap 12", "[][]"));
 
         buttons.add(finishButton);
         buttons.add(deleteButton);
@@ -86,8 +77,32 @@ public class EditModal extends JDialog {
     public JButton getFinishButton() {
         return finishButton;
     }
-
     public JButton getDeleteButton() {
         return deleteButton;
+    }
+    public String getTitle() { return title.getText(); }
+    public String getPublishDate() {return publishDate.getText();}
+    public String getIsbn() {return isbn.getText();}
+    public String getPublisher() {return publisher.getText();}
+    public String getAuthor() {return author.getText();}
+
+    public void setTitleValue(String value){
+        title.setText(value);
+    }
+
+    public void setPublishDateValue(String value){
+        publishDate.setText(value);
+    }
+
+    public void setIsbnValue(String value){
+        isbn.setText(value);
+    }
+
+    public void setPublisherValue(String value){
+        publisher.setText(value);
+    }
+
+    public void setAuthorValue(String value){
+        author.setText(value);
     }
 }
