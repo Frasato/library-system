@@ -19,12 +19,13 @@ public class Filter extends JPanel {
         putClientProperty(FlatClientProperties.STYLE, "arc: 6;");
 
         filterField = new JTextField();
+        filterField.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Pesquisar...");
         filterField.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
                 "borderWidth: 0;" +
                 "focusedBorderColor: #ACC813;"
         );
 
-        searchButton = new JButton("Pesquisar");
+        searchButton = new JButton("Atualizar");
         searchButton.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
                 "borderWidth: 0;"
         );
