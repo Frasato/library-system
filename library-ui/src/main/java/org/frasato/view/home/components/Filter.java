@@ -41,4 +41,6 @@ public class Filter extends JPanel {
     public JButton getButton(){
         return this.searchButton;
     }
+
+    public JTextField getFilterField(){ return this.filterField; }
 }
