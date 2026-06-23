@@ -1,8 +1,8 @@
 package org.frasato.controller.home;
 
+import org.frasato.model.BookModel;
 import org.frasato.model.BookTableModel;
-import org.frasato.service.AddBookService;
-import org.frasato.service.ListBooksService;
+import org.frasato.service.*;
 import org.frasato.view.home.HomeView;
 import org.frasato.view.home.modal.EditModal;
 import org.frasato.view.home.modal.IncludeModal;
@@ -48,18 +48,52 @@ public class HomeController {
     private void importFile(){
         JFileChooser chooser = new JFileChooser();
         int result = chooser.showDialog(homeView, "Selecionar");
+        ImportBookService importBookService = new ImportBookService();
 
         if(result == JFileChooser.APPROVE_OPTION){
             File file = chooser.getSelectedFile();
-            System.out.println(file);
+            importBookService.execute(file);
         }
     }
 
     private void openEditModal(){
+        JTable table = homeView.getTable().getTable();
+        int selectedRow = table.getSelectedRow();
+        DeleteBookService deleteBookService = new DeleteBookService();
+        UpdateBookService updateBookService = new UpdateBookService();
+
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(homeView, "Selecione um livro para editar!");
+            return;
+        }
+
+        BookModel bookModel = model.getBookAt(selectedRow);
+
         EditModal editModal = new EditModal();
 
+        editModal.setTitleValue(bookModel.getTitle());
+        editModal.setPublishDateValue(bookModel.getPublishDate());
+        editModal.setIsbnValue(String.join(", ", bookModel.getIsbn()));
+        editModal.setPublisherValue(String.join(", ", bookModel.getPublishers()));
+        if(bookModel.getAuthors() != null && !bookModel.getAuthors().isEmpty()){
+            editModal.setAuthorValue(bookModel.getAuthors().getFirst().getName());
+        }
+
         JButton finishButton = editModal.getFinishButton();
+        finishButton.addActionListener(e -> {
+            String response = updateBookService.execute(
+                    editModal.getTitle(),
+                    editModal.getPublishDate(),
+                    editModal.getIsbn(),
+                    editModal.getPublisher(),
+                    bookModel.getId().toString()
+            );
+
+            JOptionPane.showMessageDialog(homeView, response);
+        });
+
         JButton deleteButton = editModal.getDeleteButton();
+        deleteButton.addActionListener(e -> deleteBookService.execute(bookModel.getId()));
 
         editModal.setVisible(true);
     }
