@@ -1,16 +1,13 @@
 package org.frasato.controller.home;
 
-import org.frasato.model.AuthorModel;
-import org.frasato.model.BookModel;
 import org.frasato.model.BookTableModel;
+import org.frasato.service.AddBookService;
+import org.frasato.service.ListBooksService;
 import org.frasato.view.home.HomeView;
 import org.frasato.view.home.modal.EditModal;
 import org.frasato.view.home.modal.IncludeModal;
-
 import javax.swing.*;
 import java.io.File;
-import java.util.List;
-import java.util.UUID;
 
 public class HomeController {
     private final HomeView homeView;
@@ -33,7 +30,7 @@ public class HomeController {
     private void bindEvents(){
         homeView.getBottom()
                 .getIncludeButton()
-                .addActionListener(e -> new IncludeModal().setVisible(true));
+                .addActionListener(e -> openIncludeModal());
 
         homeView.getBottom()
                 .getImportButton()
@@ -41,7 +38,7 @@ public class HomeController {
 
         homeView.getBottom()
                 .getEditButton()
-                .addActionListener(e -> new EditModal().setVisible(true));
+                .addActionListener(e -> openEditModal());
     }
 
     private void importFile(){
@@ -54,18 +51,29 @@ public class HomeController {
         }
     }
 
+    private void openEditModal(){
+        EditModal editModal = new EditModal();
+
+        JButton finishButton = editModal.getFinishButton();
+        JButton deleteButton = editModal.getDeleteButton();
+
+        editModal.setVisible(true);
+    }
+
+    private void openIncludeModal(){
+        IncludeModal includeModal = new IncludeModal();
+
+        JButton addButton = includeModal.getAddButton();
+        addButton.addActionListener(e -> {
+            AddBookService bookService = new AddBookService();
+            bookService.execute(includeModal.getIsbnField());
+        });
+
+        includeModal.setVisible(true);
+    }
+
     private void loadBooks(){
-
-        List<String> isbn = List.of("0049932551", "0049932333");
-        List<String> publishers = List.of("Publisher 1", "Publisher 2");
-        List<AuthorModel> author = List.of(
-                new AuthorModel(UUID.randomUUID(), "Autor Numero 1", "01-03-1996")
-        );
-
-        List<BookModel> bookModels = List.of(
-            new BookModel(UUID.randomUUID(), "Cronicas de Fogo e Gelo", "10-03-2024", isbn, publishers, author, null),
-            new BookModel(UUID.randomUUID(), "Harry Pote", "03-12-2002", isbn, publishers, author, null)
-        );
-        model.setBooks(bookModels);
+        ListBooksService listBooksService = new ListBooksService();
+        model.setBooks(listBooksService.execute());
     }
 }
