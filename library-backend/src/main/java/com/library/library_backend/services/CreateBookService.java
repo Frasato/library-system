@@ -22,17 +22,19 @@ public class CreateBookService {
     @Transactional
     public Book createBook(Book book){
         if(book == null) throw new RuntimeException("Book can't be null!");
-        if(book.getAuthor().isEmpty()) throw new RuntimeException("Authors can't be empty!");
 
         List<Author> authors = book.getAuthor();
-        List<Author> savedAuthors = authors
-                .stream()
-                .map(author -> authorRepository
-                        .findAuthorByKey(author.getKey())
-                        .orElseGet(() -> authorRepository.save(author)))
-                .toList();
+        if(authors != null){
+            List<Author> savedAuthors = authors
+                    .stream()
+                    .map(author -> authorRepository
+                            .findAuthorByKey(author.getKey())
+                            .orElseGet(() -> authorRepository.save(author)))
+                    .toList();
+    
+            book.setAuthor(savedAuthors);
+        }
 
-        book.setAuthor(savedAuthors);
         return bookRepository.save(book);
     }
 
