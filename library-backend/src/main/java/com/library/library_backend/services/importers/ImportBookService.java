@@ -1,6 +1,8 @@
 package com.library.library_backend.services.importers;
 
 import com.library.library_backend.dto.ResponseImportBookDto;
+import com.library.library_backend.exceptions.InvalidFileException;
+import com.library.library_backend.exceptions.InvalidFileNameException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
 import org.springframework.http.HttpStatus;
@@ -23,13 +25,10 @@ public class ImportBookService {
     }
 
     public ResponseImportBookDto importFile(MultipartFile file) {
-        if (file == null)
-            throw new RuntimeException("File is null");
+        if (file == null) throw new InvalidFileException();
 
         String filename = file.getOriginalFilename();
-
-        if (filename == null)
-            throw new RuntimeException("File name is not valid!");
+        if (filename == null) throw new InvalidFileNameException();
 
         String extension = filename.substring(filename.lastIndexOf(".") + 1);
 
