@@ -5,14 +5,9 @@ import com.library.library_backend.mappers.BookMapper;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.services.importers.ImportBookService;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -74,16 +69,7 @@ public class BookFacade {
         return importBookService.importFile(file);
     }
 
-    public Map<String, Object> updateBook(RequestUpdateBookDto requestUpdateBookDto, String id){
-        Map<String, Object> response = new HashMap<>();
-
-        updateBookService.updateBook(requestUpdateBookDto, UUID.fromString(id));
-
-        response.put("status", HttpStatus.OK);
-        response.put("book_id", id);
-        response.put("time", Instant.now());
-        return response;
-    }
+    public ResponseUpdateBookDto updateBook(RequestUpdateBookDto requestUpdateBookDto, String id){ return updateBookService.updateBook(requestUpdateBookDto, UUID.fromString(id));}
 
     public List<Book> allBooks(){
         return allBooksService.fetchAllBooks();

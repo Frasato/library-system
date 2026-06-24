@@ -1,10 +1,14 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.RequestUpdateBookDto;
+import com.library.library_backend.dto.ResponseUpdateBookDto;
 import com.library.library_backend.exceptions.BookNotFoundException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +22,7 @@ public class UpdateBookService {
         this.bookRepository = bookRepository;
     }
 
-    public void updateBook(RequestUpdateBookDto request, UUID id){
+    public ResponseUpdateBookDto updateBook(RequestUpdateBookDto request, UUID id){
         Optional<Book> foundedBook = bookRepository.findById(id);
         if(foundedBook.isEmpty()) throw new BookNotFoundException(id.toString());
 
@@ -51,5 +55,10 @@ public class UpdateBookService {
         }
 
         bookRepository.save(book);
+        return new ResponseUpdateBookDto(
+                HttpStatus.OK,
+                id,
+                Instant.now()
+        );
     }
 }
