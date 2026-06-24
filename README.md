@@ -43,6 +43,22 @@ Isso irá iniciar:
 - Build API
  
 ---
+
+## 📚 Gerar Documentação
+ 
+### 1. Rode o comando
+ 
+```bash
+./mvnw javadoc:javadoc
+```
+
+### 2. Entre na pasta
+ 
+```bash
+/target/reports/apidocs/index.html
+```
+
+---
  
 ## 🔌 Endpoints da API
  
