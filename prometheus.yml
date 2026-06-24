@@ -1,0 +1,9 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "library-service"
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets:
+          - "library-service:8080"
