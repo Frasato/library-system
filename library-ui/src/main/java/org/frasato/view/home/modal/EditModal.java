@@ -45,8 +45,6 @@ public class EditModal extends JDialog {
         finishButton = new JButton("Concluir");
         finishButton.putClientProperty(
                 FlatClientProperties.STYLE, "arc:12;" +
-                "minimumHeight:42;" +
-                "minimumWidth:140;" +
                 "hoverBackground:#bfdfff;"
         );
 
@@ -54,23 +52,21 @@ public class EditModal extends JDialog {
         deleteButton.putClientProperty(
                 FlatClientProperties.STYLE, "arc: 12;" +
                 "foreground: #ff4a3d;" +
-                "minimumHeight: 42;" +
-                "minimumWidth: 140;" +
                 "hoverBackground: #ffd9d6;"
         );
 
         add(label, "wrap");
 
-        add(title, "w 350!, wrap");
-        add(publishDate, "w 350!, wrap");
-        add(isbn, "w 350!, wrap");
-        add(publisher, "w 350!, wrap");
-        add(author, "w 350!, wrap");
+        add(title, "w 350!, h 42!, wrap");
+        add(publishDate, "w 350!, h 42!, wrap");
+        add(isbn, "w 350!, h 42!, wrap");
+        add(publisher, "w 350!, h 42!, wrap");
+        add(author, "w 350!, h 42!, wrap");
 
         JPanel buttons = new JPanel(new MigLayout("insets 0, gap 12", "[][]"));
 
-        buttons.add(finishButton);
-        buttons.add(deleteButton);
+        buttons.add(finishButton, "w 140!, h 42!");
+        buttons.add(deleteButton, "w 140!, h 42!");
         add(buttons);
     }
 
