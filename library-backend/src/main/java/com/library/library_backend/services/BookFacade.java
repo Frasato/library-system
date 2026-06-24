@@ -38,8 +38,6 @@ public class BookFacade {
     }
 
     public ResponseBookDto getInfosByIsbn(String isbn){
-        if(isbn.isEmpty()) throw new RuntimeException("ISBN can't be empty!");
-
         BookResponseOpenLibraryDto responseBook = bookByIsbnService.fetch(isbn);
         Book book = bookMapper.toEntity(responseBook);
 
@@ -56,8 +54,6 @@ public class BookFacade {
     }
 
     public ResponseBookDto createNewBook(String isbn){
-        if(isbn.isEmpty()) throw new RuntimeException("ISBN can't be empty!");
-
         BookResponseOpenLibraryDto responseBook = bookByIsbnService.fetch(isbn);
         Book book = bookMapper.toEntity(responseBook);
 
@@ -93,10 +89,5 @@ public class BookFacade {
         return allBooksService.fetchAllBooks();
     }
 
-    public ResponseDeleteBookDto deleteBook(String id){
-        if(id.isEmpty()) throw new RuntimeException("ID can't be null");
-        UUID convertedId = UUID.fromString(id);
-        return deleteBookService.removeBook(convertedId);
-    }
-
+    public ResponseDeleteBookDto deleteBook(String id){ return deleteBookService.removeBook(id); }
 }
