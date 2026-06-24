@@ -20,6 +20,7 @@ public class Table extends JPanel {
 
         table = new JTable(model);
         table.setDefaultRenderer(Object.class, new TableRender());
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         table.setRowHeight(40);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
