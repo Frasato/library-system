@@ -1,6 +1,9 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.AuthorResponseOpenLibraryDto;
+import com.library.library_backend.exceptions.AuthorNotFoundException;
+import com.library.library_backend.exceptions.ExternalAPIException;
+import com.library.library_backend.exceptions.InvalidKeyException;
 import com.library.library_backend.mappers.AuthorMapper;
 import com.library.library_backend.models.Author;
 import org.springframework.stereotype.Service;
@@ -18,7 +21,7 @@ public class AuthorByKey {
     }
 
     public Author fetch(String key){
-        if(key.isEmpty()) throw new RuntimeException("Key can't be empty!");
+        if(key.isEmpty()) throw new InvalidKeyException();
 
         try{
             String uri = "https://openlibrary.org"+ key +".json";
@@ -29,11 +32,11 @@ public class AuthorByKey {
                 author.setKey(key);
                 return author;
             }else{
-                throw new RuntimeException("Body not found!");
+                throw new AuthorNotFoundException(key);
             }
 
         }catch(RestClientException e){
-            throw new RuntimeException(e.getMessage());
+            throw new ExternalAPIException("Error calling OpenLibrary API: " + e);
         }
     }
 }

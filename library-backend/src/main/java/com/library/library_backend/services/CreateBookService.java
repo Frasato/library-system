@@ -10,7 +10,6 @@ import java.util.List;
 
 @Service
 public class CreateBookService {
-
     private final AuthorRepository authorRepository;
     private final BookRepository bookRepository;
 
@@ -21,8 +20,6 @@ public class CreateBookService {
 
     @Transactional
     public Book createBook(Book book){
-        if(book == null) throw new RuntimeException("Book can't be null!");
-
         List<Author> authors = book.getAuthor();
         if(authors != null){
             List<Author> savedAuthors = authors

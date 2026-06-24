@@ -1,10 +1,10 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.RequestUpdateBookDto;
+import com.library.library_backend.exceptions.BookNotFoundException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +20,7 @@ public class UpdateBookService {
 
     public void updateBook(RequestUpdateBookDto request, UUID id){
         Optional<Book> foundedBook = bookRepository.findById(id);
-        if(foundedBook.isEmpty()) throw new RuntimeException("Book not found on ID: " + id);
+        if(foundedBook.isEmpty()) throw new BookNotFoundException(id.toString());
 
         Book book = foundedBook.get();
 

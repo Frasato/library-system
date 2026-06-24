@@ -1,6 +1,8 @@
 package com.library.library_backend.services;
 
 import com.library.library_backend.dto.ResponseDeleteBookDto;
+import com.library.library_backend.exceptions.BookNotFoundException;
+import com.library.library_backend.exceptions.InvalidIDException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
 import org.springframework.stereotype.Service;
@@ -17,10 +19,17 @@ public class DeleteBookService {
         this.bookRepository = bookRepository;
     }
 
-    public ResponseDeleteBookDto removeBook(UUID id){
-        Optional<Book> foundedBook = bookRepository.findById(id);
-        foundedBook.ifPresent(bookRepository::delete);
+    public ResponseDeleteBookDto removeBook(String id){
+        if(id.isEmpty()) throw new InvalidIDException();
+        UUID convertedId = UUID.fromString(id);
 
-        return new ResponseDeleteBookDto(id.toString(), "deleted", Instant.now());
+        Optional<Book> foundedBook = bookRepository.findById(convertedId);
+
+        if(foundedBook.isEmpty()) throw new BookNotFoundException(id);
+
+        Book book = foundedBook.get();
+        bookRepository.delete(book);
+
+        return new ResponseDeleteBookDto(id, "deleted", Instant.now());
     }
 }
