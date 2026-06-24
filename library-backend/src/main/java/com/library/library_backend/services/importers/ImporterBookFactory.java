@@ -1,5 +1,6 @@
 package com.library.library_backend.services.importers;
 
+import com.library.library_backend.exceptions.UnsupportedFileException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +18,6 @@ public class ImporterBookFactory {
                 .stream()
                 .filter(importer -> importer.supports(extension))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("File not supported!"));
+                .orElseThrow(UnsupportedFileException::new);
     }
 }
