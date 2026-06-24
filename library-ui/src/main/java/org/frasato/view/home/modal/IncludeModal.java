@@ -29,7 +29,6 @@ public class IncludeModal extends JDialog {
 
         addButton = new JButton("Adicionar");
         addButton.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
-                "minimumHeight: 30;" +
                 "hoverBackground: #bfdfff;"
         );
 
@@ -40,7 +39,7 @@ public class IncludeModal extends JDialog {
 
         add(label, "gapbottom 5, wrap");
         add(isbnField, "w 220!, gapbottom 8, wrap");
-        add(addButton);
+        add(addButton, "w 120!, h 30!");
     }
 
     public String getIsbnField() {

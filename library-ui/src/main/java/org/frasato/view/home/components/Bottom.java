@@ -21,23 +21,20 @@ public class Bottom extends JPanel {
         setLayout(new MigLayout("", "[][][]", "[]"));
 
         importButton.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
-                "minimumHeight: 30;" +
                 "hoverBackground: #bfdfff;"
         );
 
         editButton.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
-                "minimumHeight: 30;" +
                 "hoverBackground: #bfdfff;"
         );
 
         includeButton.putClientProperty(FlatClientProperties.STYLE, "arc: 6;" +
-                "minimumHeight: 30;" +
                 "hoverBackground: #bfdfff;"
         );
 
-        add(importButton);
-        add(editButton);
-        add(includeButton);
+        add(importButton, "h 30!");
+        add(editButton, "h 30!");
+        add(includeButton, "h 30!");
     }
 
     public JButton getImportButton() {
