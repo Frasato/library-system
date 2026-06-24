@@ -1,5 +1,6 @@
 package com.library.library_backend.services.importers;
 
+import com.library.library_backend.exceptions.ConvertFileException;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import org.springframework.stereotype.Component;
@@ -55,7 +56,7 @@ public class TextBookImporter implements BookImporter{
             return books;
 
         }catch(IOException e){
-            throw new RuntimeException("Error while importing text file! " + e);
+            throw new ConvertFileException(e.getMessage());
         }
     }
 }

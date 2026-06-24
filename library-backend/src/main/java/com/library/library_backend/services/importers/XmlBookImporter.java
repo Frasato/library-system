@@ -1,5 +1,6 @@
 package com.library.library_backend.services.importers;
 
+import com.library.library_backend.exceptions.ConvertFileException;
 import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import org.springframework.stereotype.Component;
@@ -73,7 +74,7 @@ public class XmlBookImporter implements BookImporter{
             return books;
 
         }catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ConvertFileException(e.getMessage());
         }
     }
 
