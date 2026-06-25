@@ -41,6 +41,7 @@ public class EditModalController {
                     editModal.getPublishDate(),
                     editModal.getIsbn(),
                     editModal.getPublisher(),
+                    editModal.getAuthor(),
                     bookModel.getId().toString()
             );
 
