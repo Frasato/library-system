@@ -12,11 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Importador de livros no formato TXT.
+ *
+ * <p>Espera um arquivo com separador de tabulação {@code \t} e a seguinte estrutura de colunas:</p>
+ * <pre>
+ * titulo [TAB] dataPublicacao [TAB] isbn [TAB] editora [TAB] autores
+ * </pre>
+ * <p>Diferente do CSV, este formato <b>não possui linha de cabeçalho</b>.</p>
+ *
+ * @see BookImporter
+ * @see ImporterBookFactory
+ */
 @Component
 public class TextBookImporter implements BookImporter{
+
+    /** {@inheritDoc} */
     @Override
     public boolean supports(String extension) { return extension.equals("txt"); }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws com.library.library_backend.exceptions.ConvertFileException
+     *         caso ocorra falha na leitura ou conversão do arquivo TXT.
+     */
     @Override
     public List<Book> importFile(MultipartFile file) {
         List<Book> books = new ArrayList<>();

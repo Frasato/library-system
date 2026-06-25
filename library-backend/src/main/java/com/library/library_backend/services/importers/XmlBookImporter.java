@@ -13,14 +13,48 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Importador de livros no formato XML.
+ *
+ * <p>Espera um arquivo XML com a seguinte estrutura:</p>
+ * <pre>{@code
+ * <books>
+ *   <book>
+ *     <titulo>Título do Livro</titulo>
+ *     <dataPublicacao>2024-01-01</dataPublicacao>
+ *     <isbn>
+ *       <item>978-0000000000</item>
+ *     </isbn>
+ *     <editora>
+ *       <item>Nome da Editora</item>
+ *     </editora>
+ *     <authors>
+ *       <author>
+ *         <nome>Nome do Autor</nome>
+ *       </author>
+ *     </authors>
+ *   </book>
+ * </books>
+ * }</pre>
+ *
+ * @see BookImporter
+ * @see ImporterBookFactory
+ */
 @Component
 public class XmlBookImporter implements BookImporter{
 
+    /** {@inheritDoc} */
     @Override
     public boolean supports(String extension) {
         return extension.equals("xml");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws com.library.library_backend.exceptions.ConvertFileException
+     *         caso ocorra falha no parsing ou conversão do arquivo XML.
+     */
     @Override
     public List<Book> importFile(MultipartFile file) {
         List<Book> books = new ArrayList<>();
@@ -78,6 +112,13 @@ public class XmlBookImporter implements BookImporter{
         }
     }
 
+    /**
+     * Extrai o conteúdo textual de uma tag filha dentro de um elemento XML.
+     *
+     * @param element elemento XML pai onde a busca será realizada.
+     * @param tag     nome da tag filha a ser extraída.
+     * @return conteúdo textual da tag, sem espaços nas extremidades.
+     */
     private String getValue(Element element, String tag){
         return element.getElementsByTagName(tag).item(0).getTextContent().trim();
     }

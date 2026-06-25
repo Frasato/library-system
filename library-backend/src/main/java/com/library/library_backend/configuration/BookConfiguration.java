@@ -10,6 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * Configuração central dos beans da aplicação.
+ *
+ * <p>Registra manualmente os beans que não são detectados automaticamente
+ * pelo Spring via {@code @Component} ou {@code @Service}, como mappers
+ * e o cliente HTTP {@link RestTemplate}.</p>
+ */
 @Configuration
 public class BookConfiguration {
 

@@ -13,15 +13,41 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service responsável pela atualização parcial de livros.
+ *
+ * <p>Apenas os campos não nulos do {@link RequestUpdateBookDto} são aplicados,
+ * preservando os valores originais dos campos ausentes na requisição.</p>
+ *
+ * @see RequestUpdateBookDto
+ */
 @Service
 public class UpdateBookService {
 
     private final BookRepository bookRepository;
 
+    /**
+     * @param bookRepository repositório para busca e persistência dos livros.
+     */
     public UpdateBookService(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
+    /**
+     * Atualiza parcialmente os dados de um livro pelo seu ID.
+     *
+     * <p>Somente os campos não nulos do {@code request} serão atualizados. Campos nulos
+     * são ignorados e mantêm seus valores originais.</p>
+     *
+     * <p><b>Atenção:</b> para {@code livrosSemelhantes}, cada ID informado é resolvido
+     * para uma entidade {@link Book} via repositório antes de ser associado.</p>
+     *
+     * @param request DTO contendo os campos a serem atualizados. Campos nulos são ignorados.
+     * @param id      identificador único do livro a ser atualizado.
+     * @return {@link ResponseUpdateBookDto} com status, ID e data da atualização.
+     * @throws BookNotFoundException caso nenhum livro seja encontrado com o ID informado.
+     * @throws RuntimeException caso algum ID em {@code livrosSemelhantes} não seja encontrado.
+     */
     public ResponseUpdateBookDto updateBook(RequestUpdateBookDto request, UUID id){
         Optional<Book> foundedBook = bookRepository.findById(id);
         if(foundedBook.isEmpty()) throw new BookNotFoundException(id.toString());

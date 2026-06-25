@@ -12,13 +12,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * Importador de livros no formato CSV
+ *
+ * <p>Espera um arquivo com separador {@code ;} e a seguinte estrutura de colunas:</p>
+ * <pre>
+ *     titulo ; dataPublicacao ; isbn ; editora ; autores
+ * </pre>
+ * <p>A primeira linha do arquivo é ignorada por ser o cabeçalho.</p>
+ *
+ * @see BookImporter
+ * @see ImporterBookFactory
+*/
 @Component
 public class CsvBookImporter implements BookImporter{
+
+    /** {@inheritDoc} */
     @Override
     public boolean supports(String extension) {
         return extension.equals("csv");
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws ConvertFileException quando ocorre um erro na conversão do arquivo.
+     */
     @Override
     public List<Book> importFile(MultipartFile file) {
 
