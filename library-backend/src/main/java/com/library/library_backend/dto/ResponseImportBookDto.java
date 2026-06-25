@@ -1,11 +1,10 @@
 package com.library.library_backend.dto;
 
 import java.time.Instant;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public record ResponseImportBookDto(
         Object status,
-        AtomicInteger rows_updated,
-        AtomicInteger rows_added,
+        int rows_updated,
+        int rows_added,
         Instant time
 ){}
