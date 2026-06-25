@@ -4,6 +4,7 @@ import com.library.library_backend.dto.RequestUpdateBookDto;
 import com.library.library_backend.dto.ResponseUpdateBookDto;
 import com.library.library_backend.exceptions.BookNotFoundException;
 import com.library.library_backend.models.Book;
+import com.library.library_backend.repositories.AuthorRepository;
 import com.library.library_backend.repositories.BookRepository;
 import com.library.library_backend.services.UpdateBookService;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,8 @@ public class UpdateBookTest {
 
     @Mock
     private BookRepository bookRepository;
+    @Mock
+    private AuthorRepository authorRepository;
     @InjectMocks
     private UpdateBookService updateBookService;
 
@@ -33,7 +36,7 @@ public class UpdateBookTest {
     @DisplayName("deve lançar BookNotFoundException quando o livro não for encontrado")
     void shouldThrowBookNotFoundExceptionWhenBookDoesNotExist() {
         UUID id = UUID.randomUUID();
-        RequestUpdateBookDto request = buildRequest(null, null, null, null, null);
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, null);
 
         when(bookRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(BookNotFoundException.class, () -> updateBookService.updateBook(request, id));
@@ -46,7 +49,7 @@ public class UpdateBookTest {
         UUID id = UUID.randomUUID();
         Book book = buildBook(id, "Título Antigo", List.of("ISBN-000"), List.of("Editora A"), "2020");
 
-        RequestUpdateBookDto request = buildRequest("Título Novo", null, null, null, null);
+        RequestUpdateBookDto request = buildRequest("Título Novo", null, null, null, null, null);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any())).thenReturn(book);
@@ -65,7 +68,7 @@ public class UpdateBookTest {
         UUID id = UUID.randomUUID();
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora Velha"), "2020");
 
-        RequestUpdateBookDto request = buildRequest(null, List.of("Editora Nova"), null, null, null);
+        RequestUpdateBookDto request = buildRequest(null, List.of("Editora Nova"), null, null, null, null);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any())).thenReturn(book);
@@ -82,7 +85,7 @@ public class UpdateBookTest {
         UUID id = UUID.randomUUID();
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
 
-        RequestUpdateBookDto request = buildRequest(null, null, List.of("ISBN-999"), null, null);
+        RequestUpdateBookDto request = buildRequest(null, null, List.of("ISBN-999"), null, null, null);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any())).thenReturn(book);
@@ -99,7 +102,7 @@ public class UpdateBookTest {
         UUID id = UUID.randomUUID();
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
 
-        RequestUpdateBookDto request = buildRequest(null, null, null, "2025", null);
+        RequestUpdateBookDto request = buildRequest(null, null, null, "2025", null,null);
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any())).thenReturn(book);
@@ -119,7 +122,7 @@ public class UpdateBookTest {
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
         Book similar = buildBook(similarId, "Livro Similar", List.of("ISBN-111"), List.of("Editora B"), "2021");
 
-        RequestUpdateBookDto request = buildRequest(null, null, null, null, List.of(similarId.toString()));
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(similarId.toString()));
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.findById(similarId)).thenReturn(Optional.of(similar));
@@ -141,7 +144,7 @@ public class UpdateBookTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.findById(badId)).thenReturn(Optional.empty());
 
-        RequestUpdateBookDto request = buildRequest(null, null, null, null, List.of(badId.toString()));
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(badId.toString()));
 
         assertThrows(RuntimeException.class, () -> updateBookService.updateBook(request, id));
 
@@ -157,7 +160,7 @@ public class UpdateBookTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-        RequestUpdateBookDto request = buildRequest(null, null, null, null, null);
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, null);
 
         updateBookService.updateBook(request, id);
 
@@ -177,7 +180,7 @@ public class UpdateBookTest {
         Book book = buildBook(id, "Título Velho", List.of("ISBN-000"), List.of("Editora A"), "2010");
         Book similar = buildBook(similarId, "Similar", List.of("ISBN-SIM"), List.of("Editora S"), "2015");
 
-        RequestUpdateBookDto request = buildRequest("Título Novo", List.of("Editora B"), List.of("ISBN-999"), "2025", List.of(similarId.toString()));
+        RequestUpdateBookDto request = buildRequest("Título Novo", List.of("Editora B"), List.of("ISBN-999"), "2025", List.of("Autor B"), List.of(similarId.toString()));
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.findById(similarId)).thenReturn(Optional.of(similar));
@@ -201,7 +204,7 @@ public class UpdateBookTest {
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
 
-        RequestUpdateBookDto request = buildRequest(null, null, null, null, null);
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, null);
 
         ResponseUpdateBookDto response = updateBookService.updateBook(request, id);
 
@@ -219,9 +222,10 @@ public class UpdateBookTest {
             List<String> editora,
             List<String> isbn,
             String dataPublicacao,
+            List<String> autores,
             List<String> livrosSemelhantes
     ) {
-        return new RequestUpdateBookDto(titulo, dataPublicacao, isbn, editora, livrosSemelhantes);
+        return new RequestUpdateBookDto(titulo, dataPublicacao, isbn, editora, autores, livrosSemelhantes);
     }
 
     // Metodo utilitario para construção do Book
