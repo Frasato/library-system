@@ -2,6 +2,14 @@ spring:
   application:
     name: library-backend
 
+  data:
+    redis:
+      host: redis
+      port: 6379
+
+  cache:
+    type: redis
+
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/library}
     username: ${SPRING_DATASOURCE_USERNAME:admin}
