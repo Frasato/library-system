@@ -5,6 +5,7 @@ import com.library.library_backend.exceptions.BookNotFoundException;
 import com.library.library_backend.exceptions.InvalidIDException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.Optional;
@@ -33,12 +34,17 @@ public class DeleteBookService {
      * <p>O ID é validado e convertido de {@link String} para {@link UUID}
      * antes da busca no repositório.</p>
      *
+     * <p><b>Cache:</b> após a conclusão da exclusão, todas as entradas
+     * do cache {@code books} são invalidadas para garantir que futuras
+     * consultas retornem dados atualizados.</p>
+     *
      * @param id identificador único do livro a ser removido em formato {@link String}.
      * @return {@link ResponseDeleteBookDto} com o ID, status {@code "deleted"} e data da exclusão.
      * @throws InvalidIDException    caso o ID informado seja vazio.
      * @throws BookNotFoundException caso nenhum livro seja encontrado com o ID informado.
      * @throws IllegalArgumentException caso o ID não seja um UUID válido.
      */
+    @CacheEvict(value = "books", allEntries = true)
     public ResponseDeleteBookDto removeBook(String id){
         if(id.isEmpty()) throw new InvalidIDException();
         UUID convertedId = UUID.fromString(id);

@@ -5,6 +5,7 @@ import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.AuthorRepository;
 import com.library.library_backend.repositories.BookRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -40,6 +41,10 @@ public class CreateBookService {
      *   <li>Se a Key não existir — <b>insere</b> um novo autor</li>
      * </ul>
      *
+     * <p><b>Cache:</b> após a conclusão da criação, todas as entradas
+     * do cache {@code books} são invalidadas para garantir que futuras
+     * consultas retornem dados atualizados.</p>
+     *
      * <p>Toda a operação é executada em uma única transação via {@code @Transactional},
      * garantindo que livro e autores sejam salvos juntos ou revertidos em caso de falha.</p>
      *
@@ -47,6 +52,7 @@ public class CreateBookService {
      * @return {@link Book} salvo com ID gerado e autores persistidos.
      */
     @Transactional
+    @CacheEvict(value = "books", allEntries = true)
     public Book createBook(Book book){
         List<Author> authors = book.getAuthor();
         if(authors != null){

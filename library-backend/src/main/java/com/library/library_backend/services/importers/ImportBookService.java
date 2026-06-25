@@ -5,6 +5,7 @@ import com.library.library_backend.exceptions.InvalidFileException;
 import com.library.library_backend.exceptions.InvalidFileNameException;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.BookRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,6 +56,10 @@ public class ImportBookService {
      *   <li>Persiste todos os livros em lote via {@code saveAll}</li>
      * </ol>
      *
+     * <p><b>Cache:</b> após a conclusão da importação, todas as entradas
+     * do cache {@code books} são invalidadas para garantir que futuras
+     * consultas retornem dados atualizados.</p>
+     *
      * @param file arquivo multipart a ser importado (CSV, TXT ou XML).
      * @return {@link ResponseImportBookDto} com o resumo da importação contendo
      *         quantidade de registros adicionados, atualizados e a data de processamento.
@@ -67,6 +72,7 @@ public class ImportBookService {
      * @throws com.library.library_backend.exceptions.ConvertFileException
      *         caso ocorra falha na conversão do arquivo.
      */
+    @CacheEvict(value = "books", allEntries = true)
     public ResponseImportBookDto importFile(MultipartFile file) {
         if (file == null) throw new InvalidFileException();
 
