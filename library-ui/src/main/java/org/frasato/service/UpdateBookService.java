@@ -16,14 +16,13 @@ public class UpdateBookService {
     public String execute(
             String title, String publishDate,
             String isbn, String publisher,
-            String id
+            String autores, String id
     ){
-        if(title.isEmpty() || publishDate.isEmpty() || isbn.isEmpty() || publisher.isEmpty() || id.isEmpty()) return "Os campos não podem ser vazios!";
-
         List<String> publishers = stringToList(publisher);
         List<String> isbns = stringToList(isbn);
+        List<String> autoresList = Arrays.stream(autores.split(",")).toList();
 
-        UpdateBookDTO requestUpdate = new UpdateBookDTO(title, publishDate, isbns, publishers, null);
+        UpdateBookDTO requestUpdate = new UpdateBookDTO(title, publishDate, isbns, publishers, autoresList, null);
 
         try{
             String body = mapper.writeValueAsString(requestUpdate);
