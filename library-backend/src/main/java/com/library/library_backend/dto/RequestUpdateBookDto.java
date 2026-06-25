@@ -7,5 +7,6 @@ public record RequestUpdateBookDto(
         String dataPublicacao,
         List<String> isbn,
         List<String> editora,
+        List<String> autores,
         List<String> livrosSemelhantes
 ){}
