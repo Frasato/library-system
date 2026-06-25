@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Optional;
 
 /**
  * Service responsável por processar a importação de livros a partir de arquivos.
@@ -43,9 +43,9 @@ public class ImportBookService {
      *
      * <p>Fluxo executado:</p>
      * <ol>
-     *   <li>Valida o arquivo e extrai sua extensão</li>
+     *   <li>Valida o arquivo e extrai a sua extensão</li>
      *   <li>Seleciona o importador adequado via {@link ImporterBookFactory}</li>
-     *   <li>Converte o arquivo em uma lista de {@link Book}</li>
+     *   <li>Converte o arquivo numa lista de {@link Book}</li>
      *   <li>Para cada livro:
      *     <ul>
      *       <li>Se o ISBN já existir no banco — <b>atualiza</b> o registro</li>
@@ -78,32 +78,28 @@ public class ImportBookService {
         BookImporter importer = importerBookFactory.getImporter(extension);
         List<Book> importedBooks = importer.importFile(file);
 
-        AtomicInteger updatedRows = new AtomicInteger();
-        AtomicInteger addedRows = new AtomicInteger();
+        int updatedRows = 0;
+        int addedRows = 0;
 
         List<Book> booksToSave = new ArrayList<>();
 
-        for (Book importedBook : importedBooks) {
-            Book book = bookRepository
-                    .findByIsbnList(importedBook.getIsbn())
-                    .map(existingBook -> {
-                        existingBook.setTitulo(importedBook.getTitulo());
-                        existingBook.setIsbn(importedBook.getIsbn());
-                        existingBook.setEditora(importedBook.getEditora());
-                        existingBook.setDataPublicacao(importedBook.getDataPublicacao());
-                        existingBook.setLivrosSemelhantes(importedBook.getLivrosSemelhantes());
-                        existingBook.setAuthor(importedBook.getAuthor());
-
-                        updatedRows.incrementAndGet();
-                        return existingBook;
-                    })
-                    .orElseGet(() -> {
-                        importedBook.setId(null);
-                        addedRows.incrementAndGet();
-                        return importedBook;
-                    });
-
-            booksToSave.add(book);
+        for(Book imported : importedBooks){
+            Optional<Book> persistedBook = bookRepository.findByIsbnList(imported.getIsbn());
+            if(persistedBook.isPresent()){
+                Book existingBook = persistedBook.get();
+                existingBook.setTitulo(imported.getTitulo());
+                existingBook.setIsbn(imported.getIsbn());
+                existingBook.setEditora(imported.getEditora());
+                existingBook.setDataPublicacao(imported.getDataPublicacao());
+                existingBook.setLivrosSemelhantes(imported.getLivrosSemelhantes());
+                existingBook.setAuthor(imported.getAuthor());
+                updatedRows++;
+                booksToSave.add(existingBook);
+            }else{
+                imported.setId(null);
+                addedRows++;
+                booksToSave.add(imported);
+            }
         }
 
         bookRepository.saveAll(booksToSave);
