@@ -9,10 +9,13 @@
 | **PostgreSQL** | Banco de dados relacional |
 | **Prometheus** | Coleta de métricas da aplicação |
 | **Grafana** | Visualização e dashboards de métricas |
+| **Redis** | Cache em memória |
 | **Swing** | Interface gráfica desktop |
 | **FlatLaf** | Look and Feel moderno para o Swing |
 | **MigLayout** | Gerenciador de layout para o Swing |
 | **Docker** | Containerização do ambiente |
+| **JUnit** | Criação de testes unitários |
+| **Mockito** | Mock das classes para testes |
  
 ---
  
@@ -40,6 +43,7 @@ Isso irá iniciar:
 - PostgreSQL
 - Prometheus
 - Grafana
+- Redis
 - Build API
  
 ---
@@ -67,10 +71,10 @@ Isso irá iniciar:
 | Método | Endpoint | Descrição | Parâmetros | Retorno |
 |---|---|---|---|---|
 | `GET` | ``        | Lista todos os livros  | — | `200 OK` + lista em JSON |
-| `GET` | `/{isbn}` | Busca livro por ISBN code| `id` (path) | `200 OK` + objeto JSON |
+| `GET` | `/{isbn}` | Busca livro por ISBN code| `isbn` (path) | `200 OK` + objeto JSON |
 | `POST` | `/create`| Cria novo livro | (body) JSON `String isbn` | `201 Created` + objeto JSON |
 | `POST` | `/import` | Cria ou atualiza livro | (Param) Multipart `file` | `200 OK` + objeto JSON |
-| `PATCH` | `/{id}` | Atualiza livro | `id` (path) + (body) JSON | `204 OK` |
+| `PATCH` | `/{id}` | Atualiza livro | `id` (path) + (body) JSON | `200 OK` |
 | `DELETE` | `/delete/{id}` | Remove livro | `id` (path) | `200 OK` + objeto JSON |
 
 ---
