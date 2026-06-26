@@ -6,7 +6,7 @@ import org.frasato.service.DeleteBookService;
 import org.frasato.service.UpdateBookService;
 import org.frasato.view.home.HomeView;
 import org.frasato.view.home.modal.EditModal;
-
+import java.util.stream.Collectors;
 import javax.swing.*;
 
 public class EditModalController {
@@ -26,12 +26,20 @@ public class EditModalController {
 
         EditModal editModal = new EditModal();
 
+        System.out.print(bookModel.getAuthors().getFirst().getName());
+
         editModal.setTitleValue(bookModel.getTitle());
         editModal.setPublishDateValue(bookModel.getPublishDate());
         editModal.setIsbnValue(String.join(", ", bookModel.getIsbn()));
         editModal.setPublisherValue(String.join(", ", bookModel.getPublishers()));
         if(bookModel.getAuthors() != null && !bookModel.getAuthors().isEmpty()){
-            editModal.setAuthorValue(bookModel.getAuthors().getFirst().getName());
+            String authorString = bookModel
+                .getAuthors()
+                .stream()
+                .map(author -> author.getName())
+                .collect(Collectors.joining(", "));
+
+            editModal.setAuthorValue(authorString);
         }
 
         JButton finishButton = editModal.getFinishButton();
