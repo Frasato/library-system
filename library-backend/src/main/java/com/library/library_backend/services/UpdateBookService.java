@@ -57,7 +57,7 @@ public class UpdateBookService {
      * @param id      identificador único do livro a ser atualizado.
      * @return {@link ResponseUpdateBookDto} com status, ID e data da atualização.
      * @throws BookNotFoundException caso nenhum livro seja encontrado com o ID informado.
-     * @throws RuntimeException caso algum ID em {@code livrosSemelhantes} não seja encontrado.
+     * @throws BookNotFoundException caso algum ID em {@code livrosSemelhantes} não seja encontrado.
      */
     @CacheEvict(value = "books", allEntries = true)
     public ResponseUpdateBookDto updateBook(RequestUpdateBookDto request, UUID id){
@@ -75,7 +75,16 @@ public class UpdateBookService {
         }
 
         if(request.isbn() != null){
-            book.setIsbn(request.isbn());
+            List<String> isbnAtual = new ArrayList<>(book.getIsbn()); // cópia mutável
+
+            List<String> newIsbn = request.isbn()
+                    .stream()
+                    .map(String::trim)
+                    .filter(isbn -> !isbnAtual.contains(isbn))
+                    .toList();
+
+            isbnAtual.addAll(newIsbn);
+            book.setIsbn(isbnAtual);
         }
 
         if(request.dataPublicacao() != null){
@@ -83,7 +92,7 @@ public class UpdateBookService {
         }
 
         if(request.autores() != null && !request.autores().isEmpty()){
-            List<Author> authors = request.autores()
+            List<Author> authors = new ArrayList<>(request.autores()
                     .stream()
                     .map(name ->
                             authorRepository
@@ -91,23 +100,30 @@ public class UpdateBookService {
                                     .orElseGet(() -> {
                                         Author author = new Author();
                                         author.setNome(name);
-
                                         return authorRepository.save(author);
                                     })
                     )
-                    .toList();
+                    .toList());
 
             book.setAuthor(authors);
         }
 
         if(request.livrosSemelhantes() != null){
+            List<String> idsSemelhantes = book.getLivrosSemelhantes()
+                    .stream()
+                    .map(b -> b.getId().toString())
+                    .toList();
+
             List<Book> books = request
                     .livrosSemelhantes()
                     .stream()
-                    .map(bookId -> bookRepository.findById(UUID.fromString(bookId)).orElseThrow(RuntimeException::new))
+                    .filter(bookId -> !bookId.equals(id.toString()))
+                    .filter(bookId -> !idsSemelhantes.contains(bookId))
+                    .map(bookId -> bookRepository.findById(UUID.fromString(bookId))
+                            .orElseThrow(() -> new BookNotFoundException(bookId)))
                     .toList();
 
-            book.setLivrosSemelhantes(books);
+            book.getLivrosSemelhantes().addAll(books);
         }
 
         bookRepository.save(book);
