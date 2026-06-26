@@ -2,6 +2,7 @@ package org.frasato.controller.home;
 
 import org.frasato.controller.edit.EditModalController;
 import org.frasato.controller.include.IncludeModalController;
+import org.frasato.controller.similar.SimilarModalController;
 import org.frasato.model.BookTableModel;
 import org.frasato.service.*;
 import org.frasato.utils.FilterTable;
@@ -44,6 +45,12 @@ public class HomeController {
         }
         editButton.addActionListener(e -> openEditModal());
 
+        JButton similarButton = homeView.getBottom().getSimilarButton();
+        for(var listener : similarButton.getActionListeners()){
+            similarButton.removeActionListener(listener);
+        }
+        similarButton.addActionListener(e -> openSimilarModal());
+
         homeView.getFilter().getButton()
                 .addActionListener(e -> loadBooks());
     }
@@ -64,6 +71,8 @@ public class HomeController {
     private void openEditModal(){ new EditModalController(homeView, model); }
 
     private void openIncludeModal(){ new IncludeModalController(); }
+
+    private void openSimilarModal(){ new SimilarModalController(homeView, model); }
 
     private void loadBooks(){
         ListBooksService listBooksService = new ListBooksService();
