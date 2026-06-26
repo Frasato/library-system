@@ -75,7 +75,7 @@ public class UpdateBookService {
         }
 
         if(request.isbn() != null){
-            List<String> isbnAtual = new ArrayList<>(book.getIsbn()); // cópia mutável
+            List<String> isbnAtual = new ArrayList<>(book.getIsbn());
 
             List<String> newIsbn = request.isbn()
                     .stream()
