@@ -7,13 +7,11 @@ import org.frasato.service.*;
 import org.frasato.utils.FilterTable;
 import org.frasato.view.home.HomeView;
 import javax.swing.*;
-import javax.swing.table.TableRowSorter;
 import java.io.File;
 
 public class HomeController {
     private final HomeView homeView;
     private final BookTableModel model;
-    private TableRowSorter<BookTableModel> sorter;
 
     public HomeController(){
         model = new BookTableModel();
@@ -31,14 +29,20 @@ public class HomeController {
     }
 
     private void bindEvents(){
-        homeView.getBottom().getIncludeButton()
-                .addActionListener(e -> openIncludeModal());
+        JButton incButton = homeView.getBottom().getIncludeButton();
+        for(var listener : incButton.getActionListeners()){
+            incButton.removeActionListener(listener);
+        }
+        incButton.addActionListener(e -> openIncludeModal());
 
         homeView.getBottom().getImportButton()
                 .addActionListener(e -> importFile());
 
-        homeView.getBottom().getEditButton()
-                .addActionListener(e -> openEditModal());
+        JButton editButton = homeView.getBottom().getEditButton();
+        for(var listener : editButton.getActionListeners()){
+            editButton.removeActionListener(listener);
+        }
+        editButton.addActionListener(e -> openEditModal());
 
         homeView.getFilter().getButton()
                 .addActionListener(e -> loadBooks());
