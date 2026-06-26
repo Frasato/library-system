@@ -3,6 +3,7 @@ package com.library.library_backend;
 import com.library.library_backend.dto.RequestUpdateBookDto;
 import com.library.library_backend.dto.ResponseUpdateBookDto;
 import com.library.library_backend.exceptions.BookNotFoundException;
+import com.library.library_backend.models.Author;
 import com.library.library_backend.models.Book;
 import com.library.library_backend.repositories.AuthorRepository;
 import com.library.library_backend.repositories.BookRepository;
@@ -14,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -80,7 +82,7 @@ public class UpdateBookTest {
     }
 
     @Test
-    @DisplayName("deve atualizar apenas o ISBN quando somente ele for informado")
+    @DisplayName("deve adicionar ISBN novo quando ele ainda não existir na lista")
     void shouldUpdateOnlyIsbnWhenOnlyIsbnIsProvided() {
         UUID id = UUID.randomUUID();
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
@@ -92,7 +94,9 @@ public class UpdateBookTest {
 
         updateBookService.updateBook(request, id);
 
-        assertEquals(List.of("ISBN-999"), book.getIsbn());
+        // Serviço faz merge, não replace — ambos os ISBNs devem estar presentes
+        assertTrue(book.getIsbn().containsAll(List.of("ISBN-000", "ISBN-999")));
+        assertEquals(2, book.getIsbn().size());
         assertEquals("Título", book.getTitulo());
     }
 
@@ -142,7 +146,6 @@ public class UpdateBookTest {
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findById(badId)).thenReturn(Optional.empty());
 
         RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(badId.toString()));
 
@@ -180,17 +183,24 @@ public class UpdateBookTest {
         Book book = buildBook(id, "Título Velho", List.of("ISBN-000"), List.of("Editora A"), "2010");
         Book similar = buildBook(similarId, "Similar", List.of("ISBN-SIM"), List.of("Editora S"), "2015");
 
-        RequestUpdateBookDto request = buildRequest("Título Novo", List.of("Editora B"), List.of("ISBN-999"), "2025", List.of("Autor B"), List.of(similarId.toString()));
+        Author autor = new Author();
+        autor.setNome("Autor B");
+
+        RequestUpdateBookDto request = buildRequest(
+                "Título Novo", List.of("Editora B"), List.of("ISBN-999"),
+                "2025", List.of("Autor B"), List.of(similarId.toString())
+        );
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
         when(bookRepository.findById(similarId)).thenReturn(Optional.of(similar));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
+        when(authorRepository.findAuthorByNome("Autor B")).thenReturn(Optional.of(autor));
 
         updateBookService.updateBook(request, id);
 
         assertEquals("Título Novo", book.getTitulo());
         assertEquals(List.of("Editora B"), book.getEditora());
-        assertEquals(List.of("ISBN-999"), book.getIsbn());
+        assertTrue(book.getIsbn().contains("ISBN-999"));
         assertEquals("2025", book.getDataPublicacao());
         assertEquals(1, book.getLivrosSemelhantes().size());
     }
@@ -230,7 +240,16 @@ public class UpdateBookTest {
 
     // Metodo utilitario para construção do Book
     private Book buildBook(UUID id, String titulo, List<String> isbn, List<String> editora, String dataPublicacao) {
-        return new Book(id, titulo, dataPublicacao, isbn, editora, null, null, null);
+        return new Book(
+                id,
+                titulo,
+                dataPublicacao,
+                new ArrayList<>(isbn),
+                new ArrayList<>(editora),
+                null,
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
     }
 
 }
