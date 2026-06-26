@@ -26,8 +26,6 @@ public class EditModalController {
 
         EditModal editModal = new EditModal();
 
-        System.out.print(bookModel.getAuthors().getFirst().getName());
-
         editModal.setTitleValue(bookModel.getTitle());
         editModal.setPublishDateValue(bookModel.getPublishDate());
         editModal.setIsbnValue(String.join(", ", bookModel.getIsbn()));
