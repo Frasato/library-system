@@ -20,7 +20,7 @@ public class UpdateBookService {
     ){
         List<String> publishers = stringToList(publisher);
         List<String> isbns = stringToList(isbn);
-        List<String> autoresList = Arrays.stream(autores.split(",")).toList();
+        List<String> autoresList = Arrays.stream(autores.split(", ")).toList();
 
         UpdateBookDTO requestUpdate = new UpdateBookDTO(title, publishDate, isbns, publishers, autoresList, null);
 
