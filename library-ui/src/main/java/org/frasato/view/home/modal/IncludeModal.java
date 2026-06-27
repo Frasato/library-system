@@ -8,6 +8,7 @@ public class IncludeModal extends JDialog {
 
     private JTextField isbnField;
     private JButton addButton;
+    private JProgressBar progressBar;
 
     public IncludeModal() {init();}
 
@@ -20,6 +21,10 @@ public class IncludeModal extends JDialog {
                 "[center]",
                 "[]"
         ));
+
+        progressBar = new JProgressBar();
+        progressBar.setVisible(false);
+        progressBar.setIndeterminate(true);
 
         setSize(400, 300);
         setLocationRelativeTo(null);
@@ -49,4 +54,6 @@ public class IncludeModal extends JDialog {
     public JButton getAddButton() {
         return addButton;
     }
+
+    public JProgressBar getProgressBar() { return progressBar; }
 }

@@ -3,6 +3,7 @@ package org.frasato.controller.include;
 import org.frasato.service.AddBookService;
 import org.frasato.view.home.modal.IncludeModal;
 import javax.swing.*;
+import java.util.Arrays;
 
 public class IncludeModalController {
     public IncludeModalController(){
@@ -10,10 +11,32 @@ public class IncludeModalController {
 
         JButton addButton = includeModal.getAddButton();
         addButton.addActionListener(e -> {
-            AddBookService bookService = new AddBookService();
-            bookService.execute(includeModal.getIsbnField());
+            addButton.setEnabled(false);
+            includeModal.getProgressBar().setVisible(true);
 
-            includeModal.dispose();
+            new SwingWorker<String, Void>(){
+
+                @Override
+                protected String doInBackground() {
+                    AddBookService bookService = new AddBookService();
+                    return bookService.execute(includeModal.getIsbnField());
+                }
+
+                @Override
+                protected void done(){
+                    try{
+                        String message = get();
+                        JOptionPane.showMessageDialog(includeModal, message);
+                        includeModal.dispose();
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(includeModal, "Erro ao adicionar livro.");
+                        throw new RuntimeException(Arrays.toString(ex.getStackTrace()));
+                    }finally {
+                        includeModal.getProgressBar().setVisible(false);
+                        addButton.setEnabled(true);
+                    }
+                }
+            }.execute();
         });
 
         includeModal.setVisible(true);
