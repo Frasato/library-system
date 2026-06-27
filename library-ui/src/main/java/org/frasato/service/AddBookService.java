@@ -6,7 +6,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AddBookService {
-    public void execute(String isbn){
+    public String execute(String isbn){
 
         String jsonBody = "{\"isbn\":\"" + isbn + "\"}";
 
@@ -23,10 +23,12 @@ public class AddBookService {
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
             if(response.statusCode() != 201){
-                throw new RuntimeException("Error while creating book: " + response.body());
+                return response.body();
             }
+
+            return "Livro criado com sucesso!";
         }catch(Exception e){
-            throw new RuntimeException(e);
+            return e.getMessage();
         }
     }
 }
