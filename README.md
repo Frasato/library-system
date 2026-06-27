@@ -119,3 +119,9 @@ http://localhost:3030
 2. Insira o ID do dashboard: **`12900`**
 3. Selecione o datasource Prometheus configurado
 4. Clique em **Import**
+
+---
+## 📃 Sobre a Importação de Arquivos
+
+Para saber um pouco mais sobre o padrão dos arquivos que devem ser enviados para importação dos livros, acesse o link
+ - [Guia dos arquivos](./FILES.md)
