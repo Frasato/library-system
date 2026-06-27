@@ -75,7 +75,24 @@ public class HomeController {
     private void openSimilarModal(){ new SimilarModalController(homeView, model); }
 
     private void loadBooks(){
-        ListBooksService listBooksService = new ListBooksService();
-        model.setBooks(listBooksService.execute());
+        JProgressBar progressBar = homeView.getTable().getProgressBar();
+        progressBar.setVisible(true);
+        homeView.setEnabled(false);
+
+        new SwingWorker<Void, Void>(){
+            @Override
+            protected Void doInBackground() throws Exception {
+                ListBooksService listBooksService = new ListBooksService();
+                model.setBooks(listBooksService.execute());
+                return null;
+            }
+
+            @Override
+            protected void done(){
+                progressBar.setVisible(false);
+                homeView.setEnabled(true);
+            }
+
+        }.execute();
     }
 }

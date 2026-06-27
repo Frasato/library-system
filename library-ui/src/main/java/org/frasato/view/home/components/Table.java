@@ -10,10 +10,14 @@ import javax.swing.*;
 public class Table extends JPanel {
 
     private JTable table;
+    private JProgressBar progressBar;
 
     public Table(BookTableModel model){ init(model); }
 
     public void init(BookTableModel model){
+        progressBar = new JProgressBar();
+        progressBar.setIndeterminate(true);
+        progressBar.setVisible(false);
 
         setLayout(new MigLayout("fill, insets 0", "[grow]", "[grow]"));
         putClientProperty(FlatClientProperties.STYLE, "arc: 6;");
@@ -41,4 +45,6 @@ public class Table extends JPanel {
     public JTable getTable(){
         return table;
     }
+
+    public JProgressBar getProgressBar() { return progressBar; }
 }
