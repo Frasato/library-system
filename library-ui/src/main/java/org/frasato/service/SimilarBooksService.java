@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Arrays;
 import java.util.List;
 
 public class SimilarBooksService {
@@ -40,12 +39,5 @@ public class SimilarBooksService {
             throw new RuntimeException(e);
         }
 
-    }
-
-    private List<String> stringToList(String item){
-        return Arrays
-                .stream(item.split(", "))
-                .map(String::trim)
-                .toList();
     }
 }
