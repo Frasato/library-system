@@ -13,7 +13,6 @@ import java.util.UUID;
 @Repository
 public interface BookRepository extends JpaRepository<Book, UUID> {
     Optional<Book> findByIsbn(String isbn);
-    List<Book> findAllById(List<UUID> id);
 
     @Query("""
             SELECT b
