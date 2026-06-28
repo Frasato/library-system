@@ -129,7 +129,7 @@ public class UpdateBookTest {
         RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(similarId.toString()));
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findById(similarId)).thenReturn(Optional.of(similar));
+        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar)); // <--
         when(bookRepository.save(any())).thenReturn(book);
 
         updateBookService.updateBook(request, id);
@@ -150,6 +150,23 @@ public class UpdateBookTest {
         RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(badId.toString()));
 
         assertThrows(RuntimeException.class, () -> updateBookService.updateBook(request, id));
+
+        verify(bookRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("deve lançar BookNotFoundException quando um ID de livro semelhante não existir")
+    void shouldThrowBookNotFoundExceptionWhenSimilarBookIdDoesNotExist() { // Nome atualizado também
+        UUID id = UUID.randomUUID();
+        UUID badId = UUID.randomUUID();
+        Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
+
+        when(bookRepository.findById(id)).thenReturn(Optional.of(book));
+        when(bookRepository.findAllById(List.of(badId))).thenReturn(List.of()); // <--
+
+        RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(badId.toString()));
+
+        assertThrows(BookNotFoundException.class, () -> updateBookService.updateBook(request, id)); // BookNotFoundException agora
 
         verify(bookRepository, never()).save(any());
     }
@@ -192,7 +209,7 @@ public class UpdateBookTest {
         );
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findById(similarId)).thenReturn(Optional.of(similar));
+        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar)); // <--
         when(bookRepository.save(any(Book.class))).thenReturn(book);
         when(authorRepository.findAuthorByNome("Autor B")).thenReturn(Optional.of(autor));
 
