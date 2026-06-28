@@ -109,21 +109,36 @@ public class UpdateBookService {
         }
 
         if(request.livrosSemelhantes() != null){
-            List<String> idsSemelhantes = book.getLivrosSemelhantes()
+            List<String> similarIds = book.getLivrosSemelhantes()
                     .stream()
                     .map(b -> b.getId().toString())
                     .toList();
 
-            List<Book> books = request
+            List<UUID> searchIds = request
                     .livrosSemelhantes()
                     .stream()
-                    .filter(bookId -> !bookId.equals(id.toString()))
-                    .filter(bookId -> !idsSemelhantes.contains(bookId))
-                    .map(bookId -> bookRepository.findById(UUID.fromString(bookId))
-                            .orElseThrow(() -> new BookNotFoundException(bookId)))
+                    .filter(bookId -> !similarIds.contains(bookId))
+                    .map(UUID::fromString)
                     .toList();
 
-            book.getLivrosSemelhantes().addAll(books);
+            List<Book> foundBooks = bookRepository.findAllById(searchIds);
+
+            if(foundBooks.size() != searchIds.size()){
+                List<String> foundIds = foundBooks
+                        .stream()
+                        .map(b -> b.getId().toString())
+                        .toList();
+
+                UUID idNotFound = searchIds
+                        .stream()
+                        .filter(bookId -> !foundIds.contains(bookId.toString()))
+                        .findFirst()
+                        .orElseThrow();
+
+                throw new BookNotFoundException(idNotFound.toString());
+            }
+
+            book.getLivrosSemelhantes().addAll(foundBooks);
         }
 
         bookRepository.save(book);
