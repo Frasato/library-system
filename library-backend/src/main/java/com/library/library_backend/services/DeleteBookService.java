@@ -8,6 +8,7 @@ import com.library.library_backend.repositories.BookRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,8 +51,10 @@ public class DeleteBookService {
         UUID convertedId = UUID.fromString(id);
 
         Optional<Book> foundedBook = bookRepository.findById(convertedId);
-
         if(foundedBook.isEmpty()) throw new BookNotFoundException(id);
+
+        List<Book> referencingBooks = bookRepository.findBooksWithSimilar(convertedId);
+        referencingBooks.forEach(book -> book.getLivrosSemelhantes().remove(foundedBook.get()));
 
         Book book = foundedBook.get();
         bookRepository.delete(book);

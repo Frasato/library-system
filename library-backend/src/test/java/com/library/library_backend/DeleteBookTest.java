@@ -79,7 +79,6 @@ public class DeleteBookTest {
         deleteBookService.removeBook(id.toString());
 
         verify(bookRepository).delete(book);
-        verifyNoMoreInteractions(bookRepository);
     }
 
     @Test
