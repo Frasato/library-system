@@ -12,7 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, UUID> {
-    Optional<Book> findByIsbn(String isbn);
+    @Query("SELECT b FROM Book b JOIN b.livrosSemelhantes s WHERE s.id = :bookId")
+    List<Book> findBooksWithSimilar(@Param("bookId") UUID bookId);
 
     @Query("""
             SELECT b
