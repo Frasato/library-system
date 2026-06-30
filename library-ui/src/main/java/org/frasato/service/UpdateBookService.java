@@ -1,17 +1,13 @@
 package org.frasato.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.frasato.dto.UpdateBookDTO;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.util.Arrays;
 import java.util.List;
 
 public class UpdateBookService {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final WebClient client = WebClient.create("http://localhost:8080");
 
     /**
      * Atualiza um livro existente via PATCH na API.
@@ -32,18 +28,12 @@ public class UpdateBookService {
         UpdateBookDTO requestUpdate = new UpdateBookDTO(title, publishDate, isbns, publishers, autoresList, null);
 
         try{
-            String body = mapper.writeValueAsString(requestUpdate);
-
-            HttpClient client = HttpClient.newHttpClient();
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/v1/book/" + id))
-                    .header("Content-Type","application/json")
-                    .method("PATCH", HttpRequest.BodyPublishers.ofString(body))
-                    .build();
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            if(response.statusCode() != 200) throw new RuntimeException("Error while updating book: " + response.body());
+            client.patch()
+                    .uri("/v1/book/{id}", id)
+                    .bodyValue(requestUpdate)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
 
             return "Atualizado com sucesso!";
         }catch(Exception e){
