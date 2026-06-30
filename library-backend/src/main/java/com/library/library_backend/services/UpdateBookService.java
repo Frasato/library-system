@@ -12,10 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service responsável pela atualização parcial de livros.
@@ -92,20 +90,25 @@ public class UpdateBookService {
         }
 
         if(request.autores() != null && !request.autores().isEmpty()){
-            List<Author> authors = new ArrayList<>(request.autores()
-                    .stream()
-                    .map(name ->
-                            authorRepository
-                                    .findAuthorByNome(name)
-                                    .orElseGet(() -> {
-                                        Author author = new Author();
-                                        author.setNome(name);
-                                        return authorRepository.save(author);
-                                    })
-                    )
-                    .toList());
+            List<Author> authorList = new ArrayList<>(authorRepository.findByNomeIn(request.autores()));
 
-            book.setAuthor(authors);
+            Set<String> existingNames = authorList.stream()
+                    .map(Author::getNome)
+                    .collect(Collectors.toSet());
+
+            List<Author> newAuthors = request.autores().stream()
+                    .filter(nome -> !existingNames.contains(nome))
+                    .map(nome -> {
+                        Author author = new Author();
+                        author.setNome(nome);
+                        return author;
+                    })
+                    .toList();
+
+            List<Author> savedAuthors = authorRepository.saveAll(newAuthors);
+            authorList.addAll(savedAuthors);
+
+            book.setAuthor(authorList);
         }
 
         if(request.livrosSemelhantes() != null){
