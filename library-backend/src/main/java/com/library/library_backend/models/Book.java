@@ -1,5 +1,6 @@
 package com.library.library_backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,9 @@ public class Book {
      *
      * <p>Relacionamento {@code @ManyToMany} auto-referenciado, mapeado pela
      * tabela {@code livros_semelhantes}.</p>
+     *
+     * <p>Utilizando o {@code @JsonIgnoreProperties} para evitar
+     * loop infinito e acontecer um StackOverflowException.</p>
      */
     @ManyToMany
     @JoinTable(
@@ -46,6 +50,7 @@ public class Book {
             joinColumns = @JoinColumn(name = "livro_id"),
             inverseJoinColumns = @JoinColumn(name = "livro_semelhante_id")
     )
+    @JsonIgnoreProperties({"livrosSemelhantes", "author"})
     private List<Book> livrosSemelhantes;
 
     /**
