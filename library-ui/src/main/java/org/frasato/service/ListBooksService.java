@@ -1,18 +1,13 @@
 package org.frasato.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.frasato.model.BookModel;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
-
 
 public class ListBooksService {
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private final WebClient client = WebClient.create("http://localhost:8080");
 
     /**
      * Busca a lista completa de livros cadastrados via GET na API.
@@ -21,21 +16,12 @@ public class ListBooksService {
      */
     public List<BookModel> execute(){
         try{
-            HttpClient httpClient = HttpClient.newHttpClient();
+            return client.get()
+                    .uri("/v1/book")
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<List<BookModel>>() {})
+                    .block();
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:8080/v1/book"))
-                    .header("Content-Type","application/json")
-                    .GET()
-                    .build();
-
-            HttpResponse<String> response = httpClient
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-
-            return mapper.readValue(
-                    response.body(),
-                    new TypeReference<List<BookModel>>(){}
-            );
         }catch(Exception e){
             throw new RuntimeException(e);
         }
