@@ -16,6 +16,7 @@
 | **Docker** | Containerização do ambiente |
 | **JUnit** | Criação de testes unitários |
 | **Mockito** | Mock das classes para testes |
+| **WebFlux** | Realizar comunicação HTTP de forma limpa e mais simples |
  
 ---
  
