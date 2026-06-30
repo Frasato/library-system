@@ -13,6 +13,13 @@ public class UpdateBookService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Atualiza um livro existente via PATCH na API.
+     * Campos de lista (isbn, publisher, autores) devem ser strings separadas por vírgula.
+     *
+     * @return mensagem de sucesso em caso de status 200
+     * @throws RuntimeException se a requisição falhar ou retornar status diferente de 200
+     */
     public String execute(
             String title, String publishDate,
             String isbn, String publisher,

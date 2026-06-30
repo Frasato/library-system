@@ -9,6 +9,10 @@ import org.frasato.view.home.modal.EditModal;
 import java.util.stream.Collectors;
 import javax.swing.*;
 
+/**
+ * Abre o modal de inclusão de livro e executa o cadastro em background (SwingWorker),
+ * evitando travar a interface durante a chamada ao serviço.
+ */
 public class EditModalController {
     public EditModalController(HomeView homeView, BookTableModel model){
         JTable table = homeView.getTable().getTable();

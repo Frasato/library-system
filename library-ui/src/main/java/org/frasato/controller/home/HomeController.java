@@ -10,6 +10,10 @@ import org.frasato.view.home.HomeView;
 import javax.swing.*;
 import java.io.File;
 
+/**
+ * Controller da tela principal. Orquestra carregamento, filtro e importação de livros,
+ * e delega ações de inclusão, edição e busca de semelhantes para os respectivos modais.
+ */
 public class HomeController {
     private final HomeView homeView;
     private final BookTableModel model;

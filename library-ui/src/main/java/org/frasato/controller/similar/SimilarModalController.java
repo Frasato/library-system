@@ -10,6 +10,10 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abre o modal de livros semelhantes para o livro selecionado na tabela.
+ * Se nenhum livro estiver selecionado, exibe um aviso e não abre o modal.
+ */
 public class SimilarModalController {
 
     private SimilarBookModal view;

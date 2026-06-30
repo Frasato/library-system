@@ -5,6 +5,10 @@ import org.frasato.view.home.modal.IncludeModal;
 import javax.swing.*;
 import java.util.Arrays;
 
+/**
+ * Abre o modal de inclusão de livro e executa o cadastro em background (SwingWorker),
+ * evitando travar a interface durante a chamada ao serviço.
+ */
 public class IncludeModalController {
     public IncludeModalController(){
         IncludeModal includeModal = new IncludeModal();

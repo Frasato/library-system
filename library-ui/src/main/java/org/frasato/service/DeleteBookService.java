@@ -7,6 +7,12 @@ import java.net.http.HttpResponse;
 import java.util.UUID;
 
 public class DeleteBookService {
+
+    /**
+     * Remove um livro existente via DELETE na API.
+     *
+     * @throws RuntimeException se a requisição falhar ou retornar status diferente de 200
+     */
     public void execute(UUID bookId){
         try{
             HttpClient httpClient = HttpClient.newHttpClient();

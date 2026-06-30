@@ -14,6 +14,11 @@ public class ListBooksService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Busca a lista completa de livros cadastrados via GET na API.
+     *
+     * @throws RuntimeException se a requisição falhar ou a resposta não puder ser desserializada
+     */
     public List<BookModel> execute(){
         try{
             HttpClient httpClient = HttpClient.newHttpClient();

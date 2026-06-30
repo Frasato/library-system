@@ -11,9 +11,15 @@ import java.util.List;
 public class SimilarBooksService {
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public String execute(
-            List<String> booksId, String id
-    ){
+    /**
+     * Associa uma lista de livros semelhantes a um livro específico via PATCH na API.
+     *
+     * @param booksId IDs dos livros marcados como semelhantes
+     * @param id ID do livro que receberá as associações
+     * @return mensagem de validação se a lista estiver vazia, ou de sucesso em caso de status 200
+     * @throws RuntimeException se a requisição falhar ou retornar status diferente de 200
+     */
+    public String execute(List<String> booksId, String id){
         if(booksId.isEmpty()) {
             return "Selecione algum livro!";
         }

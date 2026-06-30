@@ -6,6 +6,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class AddBookService {
+
+    /**
+     * Cadastra um novo livro a partir do ISBN informado, enviando uma requisição
+     * POST para a API. Tanto em caso de erro HTTP quanto de exceção, o método
+     * retorna uma mensagem ao invés de lançar exceção — o corpo da resposta de
+     * erro (ou a mensagem da exceção capturada) é devolvido diretamente.
+     *
+     * @param isbn ISBN do livro a ser cadastrado
+     * @return mensagem de sucesso caso a API retorne status 201; caso contrário,
+     *         o corpo da resposta de erro ou a mensagem da exceção capturada
+     */
     public String execute(String isbn){
 
         String jsonBody = "{\"isbn\":\"" + isbn + "\"}";
