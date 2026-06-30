@@ -15,10 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -94,7 +91,6 @@ public class UpdateBookTest {
 
         updateBookService.updateBook(request, id);
 
-        // Serviço faz merge, não replace — ambos os ISBNs devem estar presentes
         assertTrue(book.getIsbn().containsAll(List.of("ISBN-000", "ISBN-999")));
         assertEquals(2, book.getIsbn().size());
         assertEquals("Título", book.getTitulo());
@@ -129,7 +125,7 @@ public class UpdateBookTest {
         RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(similarId.toString()));
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar)); // <--
+        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar));
         when(bookRepository.save(any())).thenReturn(book);
 
         updateBookService.updateBook(request, id);
@@ -156,17 +152,17 @@ public class UpdateBookTest {
 
     @Test
     @DisplayName("deve lançar BookNotFoundException quando um ID de livro semelhante não existir")
-    void shouldThrowBookNotFoundExceptionWhenSimilarBookIdDoesNotExist() { // Nome atualizado também
+    void shouldThrowBookNotFoundExceptionWhenSimilarBookIdDoesNotExist() {
         UUID id = UUID.randomUUID();
         UUID badId = UUID.randomUUID();
         Book book = buildBook(id, "Título", List.of("ISBN-000"), List.of("Editora"), "2020");
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findAllById(List.of(badId))).thenReturn(List.of()); // <--
+        when(bookRepository.findAllById(List.of(badId))).thenReturn(List.of());
 
         RequestUpdateBookDto request = buildRequest(null, null, null, null, null, List.of(badId.toString()));
 
-        assertThrows(BookNotFoundException.class, () -> updateBookService.updateBook(request, id)); // BookNotFoundException agora
+        assertThrows(BookNotFoundException.class, () -> updateBookService.updateBook(request, id));
 
         verify(bookRepository, never()).save(any());
     }
@@ -209,9 +205,10 @@ public class UpdateBookTest {
         );
 
         when(bookRepository.findById(id)).thenReturn(Optional.of(book));
-        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar)); // <--
+        when(bookRepository.findAllById(List.of(similarId))).thenReturn(List.of(similar));
         when(bookRepository.save(any(Book.class))).thenReturn(book);
-        when(authorRepository.findAuthorByNome("Autor B")).thenReturn(Optional.of(autor));
+        when(authorRepository.findByNomeIn(List.of("Autor B"))).thenReturn(new ArrayList<>(List.of(autor)));
+        when(authorRepository.saveAll(anyList())).thenReturn(Collections.emptyList());
 
         updateBookService.updateBook(request, id);
 
